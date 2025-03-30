@@ -38,6 +38,26 @@
             </div>
             <button id="btn-register" type="button" class="btn btn-primary">Submit</button>
         </div>
+
+        <!-- Modal, the code refer to https://getbootstrap.com/docs/5.3/components/modal/ -->
+        <div class="modal fade" id="errorPopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="errorPopupLabel">Error</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="errorPopupMessage">
+                        There is a error!
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </main>
     <script type="module" src="src/main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
