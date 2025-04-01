@@ -119,9 +119,16 @@ document.getElementById('btn-login').addEventListener('click', () => {
 });
 
 document.getElementById('btn-logout').addEventListener('click', () => {
+    const feedContainer = document.getElementById('feed-container');
+    const cards = feedContainer.querySelectorAll('.card');
+
+    cards.forEach(card => {
+        feedContainer.removeChild(card);
+    });
+
     localStorage.removeItem('lurkforwork_token');
     showPage('login')
-})
+});
 
 const showPage = (pageName) => {
     const pages = document.querySelectorAll('.page')
@@ -134,6 +141,32 @@ const showPage = (pageName) => {
     }
 }
 
+const createCard = (title, text) => {
+    const cardContainer = document.getElementById('feed-container');
+
+    const card = document.createElement('div');
+    card.classList.add('card', 'mb-3');
+    card.style.width = '18rem';
+
+    const cardBody = document.createElement('div');
+    cardBody.classList.add('card-body');
+
+    const cardTitle = document.createElement('h5');
+    cardTitle.classList.add('card-title');
+    cardTitle.textContent = title;
+
+    const cardText = document.createElement('p');
+    cardText.classList.add('card-text');
+    cardText.textContent = text;  
+
+    cardBody.appendChild(cardTitle);
+    cardBody.appendChild(cardText);
+
+    card.appendChild(cardBody);
+
+    cardContainer.appendChild(card);
+}
+
 const loadFeed = () => {
     apiCall(
         'job/feed?start=0',
@@ -144,8 +177,9 @@ const loadFeed = () => {
         for (const job of data) {
             jobDescription += job.description
             jobDescription += ' || '
-        }
-        document.getElementById('feed-content').innerText = jobDescription
+            console.log(job)
+            createCard(job.title, job.description)
+        }        
         console.log(data)
     }).catch((error) => {
         showErrorPopup('Error', error.message)

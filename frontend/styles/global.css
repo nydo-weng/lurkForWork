@@ -1,16 +1,36 @@
-/* base styles, feel free to edit */
-html,
-body {
+* {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    height: 100%;
-    font-family: Arial;
-}
-
-main {
-    margin: 10px;
 }
 
 .hide {
     display: none;
+}
+
+#page-login, #page-register {
+    padding: 10px;
+}
+
+#top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #6c757d;
+    padding: 10px;
+    z-index: 999;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 10vh;
+}
+
+#page-feed {
+    margin-top: 10vh;
+}
+
+#feed-container {
+    background-color: #00F5FF;
+    padding: 10px;
 }

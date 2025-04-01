@@ -26,7 +26,8 @@
             </div>
             <button id="btn-login" type="button" class="btn btn-primary">Log in</button>
             <br>
-            <span>Don't have a LurkForWork account? </span><a internal-link="register" href="#"><span>Join Now</span></a>
+            <span>Don't have a LurkForWork account? </span><a internal-link="register" href="#"><span>Join
+                    Now</span></a>
         </div>
 
         <div id="page-register" class="page hide">
@@ -53,13 +54,17 @@
         </div>
 
         <div id="page-feed" class="page hide">
-            <button class="btn btn-primary" id="btn-logout">Logout</button>
-            <h1>Feed page</h1> 
-            <div id="feed-content"></div>
+            <div id="top-bar">
+                <h1>Feed page</h1>
+                <button class="btn btn-primary" id="btn-logout">Logout</button>
+            </div>
+            <div id="feed-container">
+                <!-- adding feed card to here by js -->
+            </div>
         </div>
 
         <!-- above are pages, under are smal componets -->
- 
+
         <!-- Modal, the code refer to https://getbootstrap.com/docs/5.3/components/modal/ -->
         <!-- This part used for Error Popup -->
         <div class="modal fade" id="errorPopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
