@@ -141,31 +141,86 @@ const showPage = (pageName) => {
     }
 }
 
-const createCard = (title, text) => {
+const createCard = (job) => {
     const cardContainer = document.getElementById('feed-container');
 
     const card = document.createElement('div');
     card.classList.add('card', 'mb-3');
-    card.style.width = '18rem';
+    card.style.width = '100%';
 
     const cardBody = document.createElement('div');
     cardBody.classList.add('card-body');
 
-    const cardTitle = document.createElement('h5');
-    cardTitle.classList.add('card-title');
-    cardTitle.textContent = title;
+    // Name of the author who made the job post
+    const cardAuthor = document.createElement('p');
+    cardAuthor.classList.add('card-text', 'text-muted');
+    cardAuthor.textContent = `author: ${job.creatorId}`;
 
-    const cardText = document.createElement('p');
-    cardText.classList.add('card-text');
-    cardText.textContent = text;  
+    // When it was posted
+    const cardTime = document.createElement('p');
+    cardTime.classList.add('card-text', 'text-muted');
+    cardTime.textContent = `Posted time: ${job.createdAt}`;
+
+    // An image to describe the job (jpg in base64 format) - can be any aspect ratio
+    const img = document.createElement('img');
+    img.src = job.image;
+    img.classList.add('card-img-top');
+    img.alt = "Job Image";
+    img.style.width = "100px";
+    img.style.objectFit = "cover";
+    img.style.margin = "10px"
+
+    // A title for the new job
+    const cardTitle = document.createElement('h3');
+    cardTitle.classList.add('card-title');
+    cardTitle.textContent = job.title;
+
+    // A starting date for the job (in the format DD/MM/YYYY) - it can't be earlier than today
+    const cardStartDate = document.createElement('p');
+    cardTime.classList.add('card-text', 'text-muted');
+    cardTime.textContent = `Starting date: ${job.start}`;
+
+    // How many likes it has (or none)
+    const cardLikes = document.createElement('p');
+    cardLikes.classList.add('card-text');
+    cardLikes.textContent = `👍 ${job.likes.length || 'none'} likes`;
+
+    // The job description text
+    const cardDescriptionBody = document.createElement('div');
+
+    const cardDescriptionHeader = document.createElement('h4');
+    cardDescriptionHeader.classList.add('card-text');
+    cardDescriptionHeader.textContent = 'Job description:'
+
+    const cardDescription = document.createElement('p');
+    cardDescription.classList.add('card-text');
+    cardDescription.textContent = '"' + job.description + '"';
+
+    cardDescriptionBody.appendChild(cardDescriptionHeader)
+    cardDescriptionBody.appendChild(cardDescription)
+
+    cardDescriptionBody.style.backgroundColor = "#F8F8FF"
+    cardDescriptionBody.style.borderRadius = "15px"
+    cardDescriptionBody.style.marginBottom = "10px"
+    cardDescriptionBody.style.padding = "10px"
+
+    // How many comments the job post has
+    const cardComments = document.createElement('p');
+    cardComments.classList.add('card-text');
+    cardComments.textContent = `💬 ${job.comments.length || 'no'} comments`;
 
     cardBody.appendChild(cardTitle);
-    cardBody.appendChild(cardText);
-
+    cardBody.appendChild(cardAuthor);
+    cardBody.appendChild(cardTime);
+    cardBody.appendChild(cardStartDate);
+    cardBody.appendChild(cardDescriptionBody);
+    cardBody.appendChild(cardLikes);
+    cardBody.appendChild(cardComments);
+    card.appendChild(img);
     card.appendChild(cardBody);
 
     cardContainer.appendChild(card);
-}
+};
 
 const loadFeed = () => {
     apiCall(
@@ -178,7 +233,8 @@ const loadFeed = () => {
             jobDescription += job.description
             jobDescription += ' || '
             console.log(job)
-            createCard(job.title, job.description)
+            // createCard(job.title, job.description)
+            createCard(job)
         }        
         console.log(data)
     }).catch((error) => {

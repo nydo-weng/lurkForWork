@@ -17,7 +17,7 @@
     top: 0;
     left: 0;
     width: 100%;
-    background-color: #6c757d;
+    background-color: #B2DFEE;
     padding: 10px;
     z-index: 999;
     display: flex;
@@ -31,6 +31,5 @@
 }
 
 #feed-container {
-    background-color: #00F5FF;
     padding: 10px;
 }
