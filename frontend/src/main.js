@@ -23,22 +23,30 @@ function showErrorPopup(errorLabel, errorMessage) {
     modal.show();
 }
 
-function apiCall(path, method, data, successCallback) {
-    fetch(`http://localhost:5005/${path}`, {
-        method: method,
-        body: JSON.stringify(data),
-        headers: {
-            'Content-type': 'application/json'
-        }
-    }).then((response) => {
-        response.json().then((data) => {
-            if (response.status === 200) {
-                successCallback(data)
-            } else {
-                showErrorPopup('Error', data.error)
+let token = localStorage.getItem('lurkforwork_token')
+
+function apiCall(path, method, data) {
+    return new Promise((resolve, reject) => {
+        fetch(`http://localhost:5005/${path}`, {
+            method: method,
+            body: method === 'GET' ? undefined : JSON.stringify(data),
+            headers: {
+                'Content-type': 'application/json',
+                'Authorization': token ? `Bearer ${token}` : undefined,
             }
-        });
-    });
+        }).then((response) => {
+            response.json().then((data) => { 
+                if (response.status === 200) {
+                    resolve(data)
+                } else {
+                    // if reach here, catch will not be run.
+                    reject(new Error(data.error || 'Responsed some errors'))
+                }
+            });
+        }).catch((error) => {
+            reject(new Error('Network error: ' + error.message))
+        })
+    })
 }
 
 document.getElementById('btn-register').addEventListener('click', () => {
@@ -57,13 +65,14 @@ document.getElementById('btn-register').addEventListener('click', () => {
                 email: email,
                 name: name,
                 password: password,
-            },
-            function (data) {
-                localStorage.setItem('lurkforwork_token', data.token)
-                showPage('feed')
-                loadFeed()
             }
-        );
+        ).then((data) => {
+            localStorage.setItem('lurkforwork_token', data.token)
+            token = localStorage.getItem('lurkforwork_token')
+            showPage('feed')
+        }).catch((error) => {
+            showErrorPopup('Error', error.message)
+        });
     }
 });
 
@@ -77,12 +86,13 @@ document.getElementById('btn-login').addEventListener('click', () => {
             email: email,
             password: password,
         },
-        function (data) {
-            localStorage.setItem('lurkforwork_token', data.token)
-            showPage('feed')
-            loadFeed()
-        }
-    );
+    ).then((data) => {
+        localStorage.setItem('lurkforwork_token', data.token)
+        token = localStorage.getItem('lurkforwork_token')
+        showPage('feed')
+    }).catch((error) => {
+        showErrorPopup('Error', error.message)
+    });
 });
 
 document.getElementById('btn-logout').addEventListener('click', () => {
@@ -96,12 +106,29 @@ const showPage = (pageName) => {
         page.classList.add('hide')
     }
     document.getElementById(`page-${pageName}`).classList.remove('hide')
+    if (pageName === 'feed') {
+        loadFeed()
+    }
 }
 
 const loadFeed = () => {
     // 在这里 load feed
-    //  document.getElementById('feed-content').innerText = 'things'
-    // apiCall('job/feed?start=0', 'GET', {});
+    // document.getElementById('feed-content').innerText = 'things'
+    apiCall(
+        'job/feed?start=0',
+        'GET',
+        {}
+    ).then((data) => {
+        let jobDescription = '';
+        for (const job of data) {
+            jobDescription += job.description
+            jobDescription += ' || '
+        }
+        document.getElementById('feed-content').innerText = jobDescription
+        console.log(data)
+    }).catch((error) => {
+        showErrorPopup('Error', error.message)
+    });
 }
 
 // Do it when the page loads
@@ -114,7 +141,7 @@ for (const atag of document.querySelectorAll('a')) {
     }
 }
 
-let token = localStorage.getItem('lurkforwork_token')
+
 if (token) {
     showPage('feed')
 } else {
