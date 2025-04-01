@@ -14,7 +14,23 @@
 
 <body>
     <main role="main">
-        <div>
+        <div id="page-login" class="page hide">
+            <h1>Login</h1>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-email">Email</span>
+                <input type="text" class="form-control" placeholder="jiaxin.weng959@gmail.com" aria-label="Email"
+                    aria-describedby="basic-email" id="login-email">
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-password1">Password</span>
+                <input type="password" class="form-control" aria-label="Password" aria-describedby="basic-password1"
+                    id="login-password">
+            </div>
+            <button id="btn-login" type="button" class="btn btn-primary">Submit</button>
+            <a internal-link="register" href="#"><p>(Register instead)</p></a>
+        </div>
+
+        <div id="page-register" class="page hide">
             <h1>Register</h1>
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-email">Email</span>
@@ -37,9 +53,18 @@
                     aria-describedby="basic-password2" id="register-password-confirm">
             </div>
             <button id="btn-register" type="button" class="btn btn-primary">Submit</button>
+            <a internal-link="login" href="#"><p>(Login instead)</p></a>
         </div>
 
+        <div id="page-job" class="page hide">
+            <button class="btn btn-primary" id="btn-logout">Logout</button>
+            <h1>Job page</h1> 
+        </div>
+
+        <!-- above are pages, under are smal componets -->
+
         <!-- Modal, the code refer to https://getbootstrap.com/docs/5.3/components/modal/ -->
+        <!-- This part used for Error Popup -->
         <div class="modal fade" id="errorPopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
             aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">

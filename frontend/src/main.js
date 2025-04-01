@@ -34,10 +34,64 @@ document.getElementById('btn-register').addEventListener('click', () => {
         password,
         passwordConfirm
     )
+
     if (password !== passwordConfirm) {
-       showErrorPopup("Error", "The two passwords don't match, please check!")
+       showErrorPopup('Error', "The two passwords don't match, please check!")
     } else {
         // 密码匹配, 可以提交表单, 待完成...
         console.log("密码匹配")
+
+        const fetchResult = fetch('http://localhost:5005/auth/register', {
+            method: 'POST',
+            body: JSON.stringify({
+                email: email,
+                name: name,
+                password: password
+            }),
+            headers: {
+                'Content-type': 'application/json'
+            }
+        });
+
+        console.log(fetchResult)
+
+        fetchResult.then((result) => {
+            const jsonPromise = result.json()
+            jsonPromise.then((data) => {
+                localStorage.setItem('lurkforwork_token', data.token)
+                showPage('job')
+            })
+        })
+        
     }
+}) 
+
+document.getElementById('btn-logout').addEventListener('click', () => {
+    localStorage.removeItem('lurkforwork_token');
+    showPage('register')
 })
+
+const showPage = (pageName) => {
+    const pages = document.querySelectorAll('.page')
+    for (const page of pages) {
+        page.classList.add('hide')
+    }
+    document.getElementById(`page-${pageName}`).classList.remove('hide')
+}
+
+// Do it when the page loads
+for (const atag of document.querySelectorAll('a')) {
+    if (atag.hasAttribute('internal-link')) {
+        atag.addEventListener('click', () => {
+            const pageName = atag.getAttribute('internal-link')
+            showPage(pageName)
+        })
+    }
+}
+
+let token = localStorage.getItem('lurkforwork_token')
+if (token) {
+    showPage('job')
+} else {
+    showPage('register')
+}
