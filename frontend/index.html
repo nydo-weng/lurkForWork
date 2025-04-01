@@ -18,42 +18,38 @@
             <h1>Login</h1>
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-email">Email</span>
-                <input type="text" class="form-control" placeholder="jiaxin.weng959@gmail.com" aria-label="Email"
-                    aria-describedby="basic-email" id="login-email">
+                <input type="text" class="form-control" placeholder="z5570225@unsw.edu.au" id="login-email">
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-password1">Password</span>
-                <input type="password" class="form-control" aria-label="Password" aria-describedby="basic-password1"
-                    id="login-password">
+                <input type="password" class="form-control" id="login-password">
             </div>
-            <button id="btn-login" type="button" class="btn btn-primary">Submit</button>
-            <a internal-link="register" href="#"><p>(Register instead)</p></a>
+            <button id="btn-login" type="button" class="btn btn-primary">Log in</button>
+            <br>
+            <span>Don't have a LurkForWork account? </span><a internal-link="register" href="#"><span>Join Now</span></a>
         </div>
 
         <div id="page-register" class="page hide">
             <h1>Register</h1>
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-email">Email</span>
-                <input type="text" class="form-control" placeholder="jiaxin.weng959@gmail.com" aria-label="Email"
-                    aria-describedby="basic-email" id="register-email">
+                <input type="text" class="form-control" placeholder="z5570225@unsw.edu.au" id="register-email">
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-name">Name</span>
-                <input type="text" class="form-control" placeholder="Jiaxin" aria-label="Name"
-                    aria-describedby="basic-name" id="register-name">
+                <input type="text" class="form-control" placeholder="Jiaxin" id="register-name">
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-password1">Password</span>
-                <input type="password" class="form-control" aria-label="Password" aria-describedby="basic-password1"
-                    id="register-password">
+                <input type="password" class="form-control" id="register-password">
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-password2">Confirm Password</span>
-                <input type="password" class="form-control" aria-label="Confirm Password"
-                    aria-describedby="basic-password2" id="register-password-confirm">
+                <input type="password" class="form-control" id="register-password-confirm">
             </div>
-            <button id="btn-register" type="button" class="btn btn-primary">Submit</button>
-            <a internal-link="login" href="#"><p>(Login instead)</p></a>
+            <button id="btn-register" type="button" class="btn btn-primary">Join</button>
+            <br>
+            <span>Already have a LurkForWork account? </span><a internal-link="login" href="#"><span>Sign in</span></a>
         </div>
 
         <div id="page-feed" class="page hide">
@@ -66,13 +62,12 @@
  
         <!-- Modal, the code refer to https://getbootstrap.com/docs/5.3/components/modal/ -->
         <!-- This part used for Error Popup -->
-        <div class="modal fade" id="errorPopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal fade" id="errorPopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="errorPopupLabel">Error</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body" id="errorPopupMessage">
                         There is a error!

@@ -15,6 +15,7 @@ function showErrorPopup(errorLabel, errorMessage) {
     const modalMessage = document.getElementById('errorPopupMessage');
 
     modalLabel.textContent = errorLabel;
+    modalLabel.style.color = 'red';
     // Set the message inside the modal
     // 设置错误信息
     modalMessage.textContent = errorMessage;
@@ -55,6 +56,17 @@ document.getElementById('btn-register').addEventListener('click', () => {
     const password = document.getElementById('register-password').value
     const passwordConfirm = document.getElementById('register-password-confirm').value
 
+    // need to comment back
+    // const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+    // const nameRegex = /^[A-Za-z' -]+$/;
+    
+    // if (!emailRegex.test(email)) {
+    //     showErrorPopup('Error', "Please enter a valid email address.")
+    // } else if (!nameRegex.test(name)) {
+    //     showErrorPopup('Error', 'Please enter a valid name.');
+    // } else if (password.length < 6) {
+    //     showErrorPopup('Error', 'The password must be at least 6 characters.');
+    // } else if (password !== passwordConfirm) {
     if (password !== passwordConfirm) {
         showErrorPopup('Error', "The two passwords don't match, please check!")
     } else {
@@ -79,25 +91,36 @@ document.getElementById('btn-register').addEventListener('click', () => {
 document.getElementById('btn-login').addEventListener('click', () => {
     const email = document.getElementById('login-email').value
     const password = document.getElementById('login-password').value
-    apiCall(
-        'auth/login',
-        'POST',
-        {
-            email: email,
-            password: password,
-        },
-    ).then((data) => {
-        localStorage.setItem('lurkforwork_token', data.token)
-        token = localStorage.getItem('lurkforwork_token')
-        showPage('feed')
-    }).catch((error) => {
-        showErrorPopup('Error', error.message)
-    });
+
+    // need to comment back
+    // const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+
+    // if (!emailRegex.test(email)) {
+    //     showErrorPopup('Error', "Please enter a valid email address.")
+    // } else if (password.length < 6) {
+    //     showErrorPopup('Error', 'The password must be at least 6 characters.');
+    // } else {
+    if (true) {
+        apiCall(
+            'auth/login',
+            'POST',
+            {
+                email: email,
+                password: password,
+            },
+        ).then((data) => {
+            localStorage.setItem('lurkforwork_token', data.token)
+            token = localStorage.getItem('lurkforwork_token')
+            showPage('feed')
+        }).catch((error) => {
+            showErrorPopup('Error', error.message)
+        });
+    }
 });
 
 document.getElementById('btn-logout').addEventListener('click', () => {
     localStorage.removeItem('lurkforwork_token');
-    showPage('register')
+    showPage('login')
 })
 
 const showPage = (pageName) => {
@@ -112,8 +135,6 @@ const showPage = (pageName) => {
 }
 
 const loadFeed = () => {
-    // 在这里 load feed
-    // document.getElementById('feed-content').innerText = 'things'
     apiCall(
         'job/feed?start=0',
         'GET',
@@ -141,9 +162,8 @@ for (const atag of document.querySelectorAll('a')) {
     }
 }
 
-
 if (token) {
     showPage('feed')
 } else {
-    showPage('register')
+    showPage('login')
 }
