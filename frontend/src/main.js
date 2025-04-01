@@ -23,48 +23,51 @@ function showErrorPopup(errorLabel, errorMessage) {
     modal.show();
 }
 
+function apiCall(path, data) {
+    fetch(`http://localhost:5005/${path}`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: { 
+            'Content-type': 'application/json'
+        }
+    }).then((response) => {
+        response.json().then((data) => {
+            if (response.status === 200) {
+                localStorage.setItem('lurkforwork_token', data.token)
+                showPage('job')
+            } else {
+                showErrorPopup('Error', data.error)
+            }
+        });
+    });
+}
+
 document.getElementById('btn-register').addEventListener('click', () => {
     const email = document.getElementById('register-email').value
     const name = document.getElementById('register-name').value
     const password = document.getElementById('register-password').value
     const passwordConfirm = document.getElementById('register-password-confirm').value
-    console.log(
-        email,
-        name,
-        password,
-        passwordConfirm
-    )
 
     if (password !== passwordConfirm) {
        showErrorPopup('Error', "The two passwords don't match, please check!")
     } else {
-        // 密码匹配, 可以提交表单, 待完成...
-        console.log("密码匹配")
-
-        const fetchResult = fetch('http://localhost:5005/auth/register', {
-            method: 'POST',
-            body: JSON.stringify({
-                email: email,
-                name: name,
-                password: password
-            }),
-            headers: {
-                'Content-type': 'application/json'
-            }
+        apiCall('auth/register', {
+            email: email,
+            name: name,
+            password: password,
         });
-
-        console.log(fetchResult)
-
-        fetchResult.then((result) => {
-            const jsonPromise = result.json()
-            jsonPromise.then((data) => {
-                localStorage.setItem('lurkforwork_token', data.token)
-                showPage('job')
-            })
-        })
-        
     }
-}) 
+});
+
+document.getElementById('btn-login').addEventListener('click', () => {
+    const email = document.getElementById('login-email').value
+    const password = document.getElementById('login-password').value
+
+    apiCall('auth/login', {
+        email: email,
+        password: password,
+    });
+});
 
 document.getElementById('btn-logout').addEventListener('click', () => {
     localStorage.removeItem('lurkforwork_token');
