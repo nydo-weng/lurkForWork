@@ -272,37 +272,78 @@ const createCard = (job) => {
 }
 
 const checkLikesList = (job) => {
-    const modalContent = document.getElementById('jobLikesContent');
+    const modalContent = document.getElementById('jobLikesContent')
     // remove content of modal
     while (modalContent.firstChild) {
-        modalContent.removeChild(modalContent.firstChild);
+        modalContent.removeChild(modalContent.firstChild)
     }
     let repeat = 5
     while (repeat > 0) {
         repeat = repeat - 1
         // adding like for current job
         for (const like of job.likes) {
-            const likedUserName = like.userName;
+            const likedUserName = like.userName
         
-            const likeBlock = document.createElement('div');
-            likeBlock.classList.add('like-block');
+            const likeBlock = document.createElement('div')
+            likeBlock.classList.add('job-modal-block')
             
-            const userNameElement = document.createElement('p');
-            userNameElement.textContent = '"' + likedUserName + '" liked this job';
-            userNameElement.classList.add('liked-user');
+            const userNameElement = document.createElement('p')
+            userNameElement.classList.add('job-modal-text')
 
-            likeBlock.appendChild(userNameElement);
+            const userNameSpan = document.createElement('span');
+            userNameSpan.textContent = likedUserName;
+            userNameSpan.classList.add('username-modal-style'); 
+            const likedText = document.createTextNode(' liked this job ❤️');
+
+            userNameElement.appendChild(userNameSpan);
+            userNameElement.appendChild(likedText);
+
+            likeBlock.appendChild(userNameElement)
         
-            modalContent.appendChild(likeBlock);
+            modalContent.appendChild(likeBlock)
         }
     }
         
-    const modal = new bootstrap.Modal(document.getElementById('jobLikesModal'));
-    modal.show();
+    const modal = new bootstrap.Modal(document.getElementById('jobLikesModal'))
+    modal.show()
     console.log(`calling checkLikesList for job ${job.id}`)
 }
 
 const checkCommentsList = (job) => {
+    const modalContent = document.getElementById('jobCommentsContent')
+    // remove content of modal
+    while (modalContent.firstChild) {
+        modalContent.removeChild(modalContent.firstChild)
+    }
+
+    let repeat = 25
+    while (repeat > 0) {
+        repeat = repeat - 1
+        // adding comment for current job
+        for (const commentData of job.comments) {
+            const commentContent = commentData.comment
+            const commentBy = commentData.userName
+
+            const commentBlock = document.createElement('div')
+            commentBlock.classList.add('job-modal-block')
+
+            const userNameSpan = document.createElement('span')
+            userNameSpan.textContent = '💬 ' + commentBy + ':'
+            userNameSpan.classList.add('username-modal-style')
+            
+            const commentContentElement = document.createElement('p')
+            commentContentElement.textContent = '"' + commentContent + '"'
+            commentContentElement.classList.add('job-modal-text')
+            
+            commentBlock.appendChild(userNameSpan)
+            commentBlock.appendChild(commentContentElement)
+        
+            modalContent.appendChild(commentBlock)
+        }
+    }
+        
+    const modal = new bootstrap.Modal(document.getElementById('jobCommentsModal'))
+    modal.show()
     console.log(`calling checkCommentsList for job ${job.id}`)
 }
 
