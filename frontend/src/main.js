@@ -268,7 +268,6 @@ const createCard = (job) => {
         // 2.3.3 like a job
         const likeJobButton = document.createElement('button')
         likeJobButton.classList.add('btn', 'btn-link', 'p-0')
-        likeJobButton.setAttribute("id", "likeJobButton")
         
         const likedJobAlready = () => {     // check if current user already liked the job
             for (const like of job.likes) {
@@ -279,8 +278,8 @@ const createCard = (job) => {
             return false
         }
 
-        const handleUnlikeClick = () => unlikeJob(job.id);
-        const handleLikeClick = () => likeJob(job.id);
+        const handleUnlikeClick = () => unlikeJob(job.id, likeJobButton);
+        const handleLikeClick = () => likeJob(job.id, likeJobButton);
 
         if (likedJobAlready()) {
             likeJobButton.textContent = `Unlike the job 💔`
@@ -314,7 +313,7 @@ const createCard = (job) => {
     });
 }
 
-const unlikeJob = (jobId) => {
+const unlikeJob = (jobId, likeJobButton) => {
     apiCall(
         'job/like',
         'PUT',
@@ -324,15 +323,12 @@ const unlikeJob = (jobId) => {
         }
     ).then((data) => {
         console.log(data)
+        // deep clone the element
+        const newlikeJobButton = likeJobButton.cloneNode(true);
+        // use the clone replace with the original one, which will remove all eventListener
+        likeJobButton.replaceWith(newlikeJobButton);
 
-        const handleLikeClick = () => likeJob(jobId);
-
-        // also the like unlikne update only worked for first element, maybe the element need to 
-        // passed to the function by parameter
-        const likeJobButton = document.getElementById('likeJobButton');
-        likeJobButton.replaceWith(likeJobButton.cloneNode(true)); // remove all listener
-        const newlikeJobButton = document.getElementById('likeJobButton'); 
-
+        const handleLikeClick = () => likeJob(jobId, newlikeJobButton);
         newlikeJobButton.textContent = `Like the job ❤️ `
         newlikeJobButton.addEventListener('click', handleLikeClick)
     }).catch((error) => {
@@ -340,7 +336,7 @@ const unlikeJob = (jobId) => {
     });
 }
 
-const likeJob = (jobId) => {
+const likeJob = (jobId, likeJobButton) => {
     apiCall(
         'job/like',
         'PUT',
@@ -350,13 +346,12 @@ const likeJob = (jobId) => {
         }
     ).then((data) => {
         console.log(data)
-
-        const handleUnlikeClick = () => unlikeJob(jobId);
-
-        const likeJobButton = document.getElementById('likeJobButton');
-        likeJobButton.replaceWith(likeJobButton.cloneNode(true)); // remove all listener
-        const newlikeJobButton = document.getElementById('likeJobButton');
-
+        // deep clone the element
+        const newlikeJobButton = likeJobButton.cloneNode(true);
+        // use the clone replace with the original one, which will remove all eventListener
+        likeJobButton.replaceWith(newlikeJobButton);
+        
+        const handleUnlikeClick = () => unlikeJob(jobId, newlikeJobButton);
         newlikeJobButton.textContent = `Unlike the job 💔`
         newlikeJobButton.addEventListener('click', handleUnlikeClick)
     }).catch((error) => {
