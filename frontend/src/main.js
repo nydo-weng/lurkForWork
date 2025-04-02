@@ -107,7 +107,7 @@ document.getElementById('btn-login').addEventListener('click', () => {
             {
                 email: email,
                 password: password,
-            },
+            }
         ).then((data) => {
             localStorage.setItem('lurkforwork_token', data.token)
             localStorage.setItem('lurkforwork_userId', data.userId)
@@ -268,7 +268,8 @@ const createCard = (job) => {
         // 2.3.3 like a job
         const likeJobButton = document.createElement('button')
         likeJobButton.classList.add('btn', 'btn-link', 'p-0')
-
+        likeJobButton.setAttribute("id", "likeJobButton")
+        
         const likedJobAlready = () => {     // check if current user already liked the job
             for (const like of job.likes) {
                 if (parseInt(like.userId) === parseInt(currentUserId)) {
@@ -278,13 +279,15 @@ const createCard = (job) => {
             return false
         }
 
+        const handleUnlikeClick = () => unlikeJob(job.id);
+        const handleLikeClick = () => likeJob(job.id);
+
         if (likedJobAlready()) {
             likeJobButton.textContent = `Unlike the job 💔`
-            likeJobButton.addEventListener('click', () => unlikeJob())
-
+            likeJobButton.addEventListener('click', handleUnlikeClick)
         } else {
             likeJobButton.textContent = `Like the job ❤️ `
-            likeJobButton.addEventListener('click', () => likeJob())
+            likeJobButton.addEventListener('click', handleLikeClick)
         }
 
         cardBody.appendChild(likeJobButton)
@@ -311,12 +314,52 @@ const createCard = (job) => {
     });
 }
 
-const unlikeJob = () => {
-    alert("unlike job!")
+const unlikeJob = (jobId) => {
+    apiCall(
+        'job/like',
+        'PUT',
+        {
+            id: jobId,
+            turnon: false,
+        }
+    ).then((data) => {
+        console.log(data)
+
+        const handleLikeClick = () => likeJob(jobId);
+
+        const likeJobButton = document.getElementById('likeJobButton');
+        likeJobButton.replaceWith(likeJobButton.cloneNode(true)); // remove all listener
+        const newlikeJobButton = document.getElementById('likeJobButton'); 
+
+        newlikeJobButton.textContent = `Like the job ❤️ `
+        newlikeJobButton.addEventListener('click', handleLikeClick)
+    }).catch((error) => {
+        showErrorPopup('Error', error.message)
+    });
 }
 
-const likeJob = () => {
-    alert("like job!")
+const likeJob = (jobId) => {
+    apiCall(
+        'job/like',
+        'PUT',
+        {
+            id: jobId,
+            turnon: true,
+        }
+    ).then((data) => {
+        console.log(data)
+
+        const handleUnlikeClick = () => unlikeJob(jobId);
+
+        const likeJobButton = document.getElementById('likeJobButton');
+        likeJobButton.replaceWith(likeJobButton.cloneNode(true)); // remove all listener
+        const newlikeJobButton = document.getElementById('likeJobButton');
+
+        newlikeJobButton.textContent = `Unlike the job 💔`
+        newlikeJobButton.addEventListener('click', handleUnlikeClick)
+    }).catch((error) => {
+        showErrorPopup('Error', error.message)
+    });
 }
 
 const checkLikesList = (job) => {
