@@ -272,6 +272,33 @@ const createCard = (job) => {
 }
 
 const checkLikesList = (job) => {
+    const modalContent = document.getElementById('jobLikesContent');
+    // remove content of modal
+    while (modalContent.firstChild) {
+        modalContent.removeChild(modalContent.firstChild);
+    }
+    let repeat = 5
+    while (repeat > 0) {
+        repeat = repeat - 1
+        // adding like for current job
+        for (const like of job.likes) {
+            const likedUserName = like.userName;
+        
+            const likeBlock = document.createElement('div');
+            likeBlock.classList.add('like-block');
+            
+            const userNameElement = document.createElement('p');
+            userNameElement.textContent = '"' + likedUserName + '" liked this job';
+            userNameElement.classList.add('liked-user');
+
+            likeBlock.appendChild(userNameElement);
+        
+            modalContent.appendChild(likeBlock);
+        }
+    }
+        
+    const modal = new bootstrap.Modal(document.getElementById('jobLikesModal'));
+    modal.show();
     console.log(`calling checkLikesList for job ${job.id}`)
 }
 
