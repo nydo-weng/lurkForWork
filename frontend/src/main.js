@@ -22,6 +22,7 @@ function showErrorPopup(errorLabel, errorMessage) {
 }
 
 let token = localStorage.getItem('lurkforwork_token')
+let currentUserId = localStorage.getItem('lurkforwork_userId')
 
 function apiCall(path, method, data) {
     return new Promise((resolve, reject) => {
@@ -77,7 +78,9 @@ document.getElementById('btn-register').addEventListener('click', () => {
             }
         ).then((data) => {
             localStorage.setItem('lurkforwork_token', data.token)
+            localStorage.setItem('lurkforwork_userId', data.userId)
             token = localStorage.getItem('lurkforwork_token')
+            currentUserId = localStorage.getItem('lurkforwork_userId')
             showPage('feed')
         }).catch((error) => {
             showErrorPopup('Error', error.message)
@@ -107,7 +110,9 @@ document.getElementById('btn-login').addEventListener('click', () => {
             },
         ).then((data) => {
             localStorage.setItem('lurkforwork_token', data.token)
+            localStorage.setItem('lurkforwork_userId', data.userId)
             token = localStorage.getItem('lurkforwork_token')
+            currentUserId = localStorage.getItem('lurkforwork_userId')
             showPage('feed')
         }).catch((error) => {
             showErrorPopup('Error', error.message)
@@ -124,6 +129,7 @@ document.getElementById('btn-logout').addEventListener('click', () => {
     });
 
     localStorage.removeItem('lurkforwork_token')
+    localStorage.removeItem('lurkforwork_userId')
     showPage('login')
 });
 
@@ -146,6 +152,9 @@ const createCard = (job) => {
     card.style.width = '100%'
 
     const cardBody = document.createElement('div')
+    cardBody.style.border = "1px solid #E7E7E7";
+    cardBody.style.borderRadius = "5px";
+    cardBody.style.margin = "5px"
     cardBody.classList.add('card-body')
 
     // An image to describe the job (jpg in base64 format) - can be any aspect ratio
@@ -159,7 +168,7 @@ const createCard = (job) => {
     card.appendChild(img)
 
     // A title for the new job
-    const cardTitle = document.createElement('h3')
+    const cardTitle = document.createElement('h1')
     cardTitle.classList.add('card-title')
     cardTitle.textContent = job.title
     cardBody.appendChild(cardTitle)
@@ -178,7 +187,7 @@ const createCard = (job) => {
         // When it was posted
         const cardTime = document.createElement('p')
         cardTime.classList.add('card-text', 'text-muted')
-        console.log(job.createdAt)
+
         const postDate = new Date(job.createdAt)
         const now = new Date()
         const diffMs = now - postDate
@@ -194,13 +203,14 @@ const createCard = (job) => {
         // The job description text
         const cardDescriptionBody = document.createElement('div')
 
-        const cardDescriptionHeader = document.createElement('h4')
+        const cardDescriptionHeader = document.createElement('h5')
         cardDescriptionHeader.classList.add('card-text')
         cardDescriptionHeader.textContent = 'Job description:'
 
         const cardDescription = document.createElement('p')
         cardDescription.classList.add('card-text')
         cardDescription.textContent = '"' + job.description + '"'
+        cardDescription.style.fontStyle = "italic"
 
         cardDescriptionBody.appendChild(cardDescriptionHeader)
         cardDescriptionBody.appendChild(cardDescription)
@@ -242,12 +252,42 @@ const createCard = (job) => {
         // How many likes it has (or none)
         const cardLikesButton = document.createElement('button')
         cardLikesButton.classList.add('btn', 'btn-link', 'p-0')
-        cardLikesButton.textContent = `❤️ ${job.likes.length || 'none'} likes`
+        cardLikesButton.textContent = `💖 ${job.likes.length || 'none'} likes`
         cardLikesButton.addEventListener('click', () => {
             checkLikesList(job)
             console.log(`this job is ${job.id}`)
         });
         cardBody.appendChild(cardLikesButton)
+
+        // add space between likes and like a job
+        const spaceSpan = document.createElement('span')
+        spaceSpan.style.display = 'inline-block'
+        spaceSpan.style.width = 'clamp(5px, 5vw, 25px)'
+        cardBody.appendChild(spaceSpan)
+
+        // 2.3.3 like a job
+        const likeJobButton = document.createElement('button')
+        likeJobButton.classList.add('btn', 'btn-link', 'p-0')
+
+        const likedJobAlready = () => {     // check if current user already liked the job
+            for (const like of job.likes) {
+                if (parseInt(like.userId) === parseInt(currentUserId)) {
+                    return true
+                }
+            }
+            return false
+        }
+
+        if (likedJobAlready()) {
+            likeJobButton.textContent = `Unlike the job 💔`
+            likeJobButton.addEventListener('click', () => unlikeJob())
+
+        } else {
+            likeJobButton.textContent = `Like the job ❤️ `
+            likeJobButton.addEventListener('click', () => likeJob())
+        }
+
+        cardBody.appendChild(likeJobButton)
 
         const breakLine = document.createElement('br')
         cardBody.appendChild(breakLine)
@@ -269,6 +309,14 @@ const createCard = (job) => {
     }).catch((error) => {
         showErrorPopup('Error', error.message)
     });
+}
+
+const unlikeJob = () => {
+    alert("unlike job!")
+}
+
+const likeJob = () => {
+    alert("like job!")
 }
 
 const checkLikesList = (job) => {
@@ -306,7 +354,7 @@ const checkLikesList = (job) => {
 
     const modal = new bootstrap.Modal(document.getElementById('jobLikesModal'))
     modal.show()
-    console.log(`calling checkLikesList for job ${job.id}`)
+    // console.log(`calling checkLikesList for job ${job.id}`)
 }
 
 const checkCommentsList = (job) => {
@@ -344,7 +392,7 @@ const checkCommentsList = (job) => {
 
     const modal = new bootstrap.Modal(document.getElementById('jobCommentsModal'))
     modal.show()
-    console.log(`calling checkCommentsList for job ${job.id}`)
+    // console.log(`calling checkCommentsList for job ${job.id}`)
 }
 
 const loadFeed = () => {
@@ -353,15 +401,11 @@ const loadFeed = () => {
         'GET',
         {}
     ).then((data) => {
-        let jobDescription = ''
         for (const job of data) {
-            jobDescription += job.description
-            jobDescription += ' || '
             console.log(job)
-            // createCard(job.title, job.description)
             createCard(job)
         }
-        console.log(data)
+        // console.log(data)
     }).catch((error) => {
         showErrorPopup('Error', error.message)
     });
