@@ -33,7 +33,7 @@ function apiCall(path, method, data) {
                 'Authorization': token ? `Bearer ${token}` : undefined,
             }
         }).then((response) => {
-            response.json().then((data) => { 
+            response.json().then((data) => {
                 if (response.status === 200) {
                     resolve(data)
                 } else {
@@ -56,7 +56,7 @@ document.getElementById('btn-register').addEventListener('click', () => {
     // need to comment back
     // const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
     // const nameRegex = /^[A-Za-z' -]+$/
-    
+
     // if (!emailRegex.test(email)) {
     //     showErrorPopup('Error', "Please enter a valid email address.")
     // } else if (!nameRegex.test(name)) {
@@ -215,7 +215,7 @@ const createCard = (job) => {
         // A starting date for the job (in the format DD/MM/YYYY) - it can't be earlier than today
         const cardStartDate = document.createElement('p')
         cardStartDate.classList.add('card-text', 'text-muted')
-  
+
         const jobStartDate = new Date(job.start)
         const jobStartTimeDiff = now - jobStartDate
 
@@ -238,7 +238,7 @@ const createCard = (job) => {
             cardStartDate.textContent = `Starting date: ${jobStartDate.toLocaleDateString('en-AU')}`
             cardBody.appendChild(cardStartDate)
         }
-        
+
         // How many likes it has (or none)
         const cardLikesButton = document.createElement('button')
         cardLikesButton.classList.add('btn', 'btn-link', 'p-0')
@@ -283,27 +283,27 @@ const checkLikesList = (job) => {
         // adding like for current job
         for (const like of job.likes) {
             const likedUserName = like.userName
-        
+
             const likeBlock = document.createElement('div')
             likeBlock.classList.add('job-modal-block')
-            
+
             const userNameElement = document.createElement('p')
             userNameElement.classList.add('job-modal-text')
 
             const userNameSpan = document.createElement('span');
             userNameSpan.textContent = likedUserName;
-            userNameSpan.classList.add('username-modal-style'); 
+            userNameSpan.classList.add('username-modal-style');
             const likedText = document.createTextNode(' liked this job ❤️');
 
             userNameElement.appendChild(userNameSpan);
             userNameElement.appendChild(likedText);
 
             likeBlock.appendChild(userNameElement)
-        
+
             modalContent.appendChild(likeBlock)
         }
     }
-        
+
     const modal = new bootstrap.Modal(document.getElementById('jobLikesModal'))
     modal.show()
     console.log(`calling checkLikesList for job ${job.id}`)
@@ -330,18 +330,18 @@ const checkCommentsList = (job) => {
             const userNameSpan = document.createElement('span')
             userNameSpan.textContent = '💬 ' + commentBy + ':'
             userNameSpan.classList.add('username-modal-style')
-            
+
             const commentContentElement = document.createElement('p')
             commentContentElement.textContent = '"' + commentContent + '"'
             commentContentElement.classList.add('job-modal-text')
-            
+
             commentBlock.appendChild(userNameSpan)
             commentBlock.appendChild(commentContentElement)
-        
+
             modalContent.appendChild(commentBlock)
         }
     }
-        
+
     const modal = new bootstrap.Modal(document.getElementById('jobCommentsModal'))
     modal.show()
     console.log(`calling checkCommentsList for job ${job.id}`)
@@ -360,7 +360,7 @@ const loadFeed = () => {
             console.log(job)
             // createCard(job.title, job.description)
             createCard(job)
-        }        
+        }
         console.log(data)
     }).catch((error) => {
         showErrorPopup('Error', error.message)
