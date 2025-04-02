@@ -7,21 +7,18 @@ console.log('Let\'s go!');
 // Function to show error popup with a custom message
 function showErrorPopup(errorLabel, errorMessage) {
     // Get the modal and the element where the error message will be displayed
-    // 获取模态框元素
-    const modal = new bootstrap.Modal(document.getElementById('errorPopup'));
+    const modal = new bootstrap.Modal(document.getElementById('errorPopup'))
 
-    const modalLabel = document.getElementById('errorPopupLabel');
-    // 获取模态框里的 message 元素
-    const modalMessage = document.getElementById('errorPopupMessage');
+    const modalLabel = document.getElementById('errorPopupLabel')
 
-    modalLabel.textContent = errorLabel;
-    modalLabel.style.color = 'red';
+    const modalMessage = document.getElementById('errorPopupMessage')
+
+    modalLabel.textContent = errorLabel
+    modalLabel.style.color = 'red'
     // Set the message inside the modal
-    // 设置错误信息
-    modalMessage.textContent = errorMessage;
-
+    modalMessage.textContent = errorMessage
     // Show the modal
-    modal.show();
+    modal.show()
 }
 
 let token = localStorage.getItem('lurkforwork_token')
@@ -46,8 +43,8 @@ function apiCall(path, method, data) {
             });
         }).catch((error) => {
             reject(new Error('Network error: ' + error.message))
-        })
-    })
+        });
+    });
 }
 
 document.getElementById('btn-register').addEventListener('click', () => {
@@ -58,14 +55,14 @@ document.getElementById('btn-register').addEventListener('click', () => {
 
     // need to comment back
     // const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-    // const nameRegex = /^[A-Za-z' -]+$/;
+    // const nameRegex = /^[A-Za-z' -]+$/
     
     // if (!emailRegex.test(email)) {
     //     showErrorPopup('Error', "Please enter a valid email address.")
     // } else if (!nameRegex.test(name)) {
-    //     showErrorPopup('Error', 'Please enter a valid name.');
+    //     showErrorPopup('Error', 'Please enter a valid name.')
     // } else if (password.length < 6) {
-    //     showErrorPopup('Error', 'The password must be at least 6 characters.');
+    //     showErrorPopup('Error', 'The password must be at least 6 characters.')
     // } else if (password !== passwordConfirm) {
     if (password !== passwordConfirm) {
         showErrorPopup('Error', "The two passwords don't match, please check!")
@@ -98,7 +95,7 @@ document.getElementById('btn-login').addEventListener('click', () => {
     // if (!emailRegex.test(email)) {
     //     showErrorPopup('Error', "Please enter a valid email address.")
     // } else if (password.length < 6) {
-    //     showErrorPopup('Error', 'The password must be at least 6 characters.');
+    //     showErrorPopup('Error', 'The password must be at least 6 characters.')
     // } else {
     if (true) {
         apiCall(
@@ -119,14 +116,14 @@ document.getElementById('btn-login').addEventListener('click', () => {
 });
 
 document.getElementById('btn-logout').addEventListener('click', () => {
-    const feedContainer = document.getElementById('feed-container');
-    const cards = feedContainer.querySelectorAll('.card');
+    const feedContainer = document.getElementById('feed-container')
+    const cards = feedContainer.querySelectorAll('.card')
 
     cards.forEach(card => {
-        feedContainer.removeChild(card);
+        feedContainer.removeChild(card)
     });
 
-    localStorage.removeItem('lurkforwork_token');
+    localStorage.removeItem('lurkforwork_token')
     showPage('login')
 });
 
@@ -142,30 +139,30 @@ const showPage = (pageName) => {
 }
 
 const createCard = (job) => {
-    const cardContainer = document.getElementById('feed-container');
+    const cardContainer = document.getElementById('feed-container')
 
-    const card = document.createElement('div');
-    card.classList.add('card', 'mb-3');
-    card.style.width = '100%';
+    const card = document.createElement('div')
+    card.classList.add('card', 'mb-3')
+    card.style.width = '100%'
 
-    const cardBody = document.createElement('div');
-    cardBody.classList.add('card-body');
+    const cardBody = document.createElement('div')
+    cardBody.classList.add('card-body')
 
     // An image to describe the job (jpg in base64 format) - can be any aspect ratio
-    const img = document.createElement('img');
-    img.src = job.image;
-    img.classList.add('card-img-top');
-    img.alt = "Job Image";
-    img.style.width = "100px";
-    img.style.objectFit = "cover";
+    const img = document.createElement('img')
+    img.src = job.image
+    img.classList.add('card-img-top')
+    img.alt = "Job Image"
+    img.style.width = "100px"
+    img.style.objectFit = "cover"
     img.style.margin = "10px"
-    card.appendChild(img);
+    card.appendChild(img)
 
     // A title for the new job
-    const cardTitle = document.createElement('h3');
-    cardTitle.classList.add('card-title');
-    cardTitle.textContent = job.title;
-    cardBody.appendChild(cardTitle);
+    const cardTitle = document.createElement('h3')
+    cardTitle.classList.add('card-title')
+    cardTitle.textContent = job.title
+    cardBody.appendChild(cardTitle)
 
     apiCall(
         `user?userId=${job.creatorId}`,
@@ -173,14 +170,14 @@ const createCard = (job) => {
         {},
     ).then((data) => {
         // Name of the author who made the job post
-        const cardAuthor = document.createElement('p');
-        cardAuthor.classList.add('card-text', 'text-muted');
-        cardAuthor.textContent = `Author: ${data.name}`;
-        cardBody.appendChild(cardAuthor);
+        const cardAuthor = document.createElement('p')
+        cardAuthor.classList.add('card-text', 'text-muted')
+        cardAuthor.textContent = `Author: ${data.name}`
+        cardBody.appendChild(cardAuthor)
 
         // When it was posted
-        const cardTime = document.createElement('p');
-        cardTime.classList.add('card-text', 'text-muted');
+        const cardTime = document.createElement('p')
+        cardTime.classList.add('card-text', 'text-muted')
         console.log(job.createdAt)
         const postDate = new Date(job.createdAt)
         const now = new Date()
@@ -192,18 +189,18 @@ const createCard = (job) => {
         } else {
             cardTime.textContent = `Posted at ${postDate.toLocaleDateString('en-AU')}`
         }
-        cardBody.appendChild(cardTime);
+        cardBody.appendChild(cardTime)
 
         // The job description text
-        const cardDescriptionBody = document.createElement('div');
+        const cardDescriptionBody = document.createElement('div')
 
-        const cardDescriptionHeader = document.createElement('h4');
-        cardDescriptionHeader.classList.add('card-text');
+        const cardDescriptionHeader = document.createElement('h4')
+        cardDescriptionHeader.classList.add('card-text')
         cardDescriptionHeader.textContent = 'Job description:'
 
-        const cardDescription = document.createElement('p');
-        cardDescription.classList.add('card-text');
-        cardDescription.textContent = '"' + job.description + '"';
+        const cardDescription = document.createElement('p')
+        cardDescription.classList.add('card-text')
+        cardDescription.textContent = '"' + job.description + '"'
 
         cardDescriptionBody.appendChild(cardDescriptionHeader)
         cardDescriptionBody.appendChild(cardDescription)
@@ -213,26 +210,26 @@ const createCard = (job) => {
         cardDescriptionBody.style.marginBottom = "10px"
         cardDescriptionBody.style.padding = "10px"
 
-        cardBody.appendChild(cardDescriptionBody);
+        cardBody.appendChild(cardDescriptionBody)
 
         // A starting date for the job (in the format DD/MM/YYYY) - it can't be earlier than today
-        const cardStartDate = document.createElement('p');
-        cardStartDate.classList.add('card-text', 'text-muted');
+        const cardStartDate = document.createElement('p')
+        cardStartDate.classList.add('card-text', 'text-muted')
   
-        const jobStartDate = new Date(job.start);
-        const jobStartTimeDiff = now - jobStartDate;
+        const jobStartDate = new Date(job.start)
+        const jobStartTimeDiff = now - jobStartDate
 
-        const minutesAgo = Math.floor(jobStartTimeDiff / (1000 * 60));
-        const hoursAgo = Math.floor(minutesAgo / 60);
-        const daysAgo = Math.floor(hoursAgo / 24);
+        const minutesAgo = Math.floor(jobStartTimeDiff / (1000 * 60))
+        const hoursAgo = Math.floor(minutesAgo / 60)
+        const daysAgo = Math.floor(hoursAgo / 24)
 
         if (jobStartDate < now) {
             if (daysAgo > 0) {
-                cardStartDate.textContent = `Started ${daysAgo} days ago`;
+                cardStartDate.textContent = `Started ${daysAgo} days ago`
             } else if (hoursAgo > 0) {
-                cardStartDate.textContent = `Started ${hoursAgo} hours ago`;
+                cardStartDate.textContent = `Started ${hoursAgo} hours ago`
             } else {
-                cardStartDate.textContent = `Started ${minutesAgo} minutes ago`;
+                cardStartDate.textContent = `Started ${minutesAgo} minutes ago`
             }
             cardBody.appendChild(cardStartDate)
             cardStartDate.classList.remove('text-muted')
@@ -243,25 +240,44 @@ const createCard = (job) => {
         }
         
         // How many likes it has (or none)
-        const cardLikes = document.createElement('p');
-        cardLikes.classList.add('card-text');
-        cardLikes.textContent = `👍 ${job.likes.length || 'none'} likes`;
-        cardBody.appendChild(cardLikes);
+        const cardLikesButton = document.createElement('button')
+        cardLikesButton.classList.add('btn', 'btn-link', 'p-0')
+        cardLikesButton.textContent = `❤️ ${job.likes.length || 'none'} likes`
+        cardLikesButton.addEventListener('click', () => {
+            checkLikesList(job)
+            console.log(`this job is ${job.id}`)
+        });
+        cardBody.appendChild(cardLikesButton)
+
+        const breakLine = document.createElement('br')
+        cardBody.appendChild(breakLine)
 
         // How many comments the job post has
-        const cardComments = document.createElement('p');
-        cardComments.classList.add('card-text');
-        cardComments.textContent = `💬 ${job.comments.length || 'no'} comments`;
-        cardBody.appendChild(cardComments);
+        const cardCommentsButton = document.createElement('button')
+        cardCommentsButton.classList.add('btn', 'btn-link', 'p-0')
+        cardCommentsButton.textContent = `💬 ${job.comments.length || 'no'} comments`
+        cardCommentsButton.addEventListener('click', () => {
+            checkCommentsList(job)
+            console.log(`this job is ${job.id}`)
+        });
+        cardBody.appendChild(cardCommentsButton)
 
-        card.appendChild(cardBody);
+        card.appendChild(cardBody)
 
-        cardContainer.appendChild(card);
+        cardContainer.appendChild(card)
 
     }).catch((error) => {
         showErrorPopup('Error', error.message)
     });
-};
+}
+
+const checkLikesList = (job) => {
+    console.log(`calling checkLikesList for job ${job.id}`)
+}
+
+const checkCommentsList = (job) => {
+    console.log(`calling checkCommentsList for job ${job.id}`)
+}
 
 const loadFeed = () => {
     apiCall(
@@ -269,7 +285,7 @@ const loadFeed = () => {
         'GET',
         {}
     ).then((data) => {
-        let jobDescription = '';
+        let jobDescription = ''
         for (const job of data) {
             jobDescription += job.description
             jobDescription += ' || '
@@ -289,7 +305,7 @@ for (const atag of document.querySelectorAll('a')) {
         atag.addEventListener('click', () => {
             const pageName = atag.getAttribute('internal-link')
             showPage(pageName)
-        })
+        });
     }
 }
 
