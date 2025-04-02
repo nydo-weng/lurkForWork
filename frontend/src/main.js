@@ -327,6 +327,8 @@ const unlikeJob = (jobId) => {
 
         const handleLikeClick = () => likeJob(jobId);
 
+        // also the like unlikne update only worked for first element, maybe the element need to 
+        // passed to the function by parameter
         const likeJobButton = document.getElementById('likeJobButton');
         likeJobButton.replaceWith(likeJobButton.cloneNode(true)); // remove all listener
         const newlikeJobButton = document.getElementById('likeJobButton'); 
