@@ -218,8 +218,29 @@ const createCard = (job) => {
         // A starting date for the job (in the format DD/MM/YYYY) - it can't be earlier than today
         const cardStartDate = document.createElement('p');
         cardStartDate.classList.add('card-text', 'text-muted');
-        cardStartDate.textContent = `Starting date: ${job.start}`;
-        cardBody.appendChild(cardStartDate);
+  
+        const jobStartDate = new Date(job.start);
+        const jobStartTimeDiff = now - jobStartDate;
+
+        const minutesAgo = Math.floor(jobStartTimeDiff / (1000 * 60));
+        const hoursAgo = Math.floor(minutesAgo / 60);
+        const daysAgo = Math.floor(hoursAgo / 24);
+
+        if (jobStartDate < now) {
+            if (daysAgo > 0) {
+                cardStartDate.textContent = `Started ${daysAgo} days ago`;
+            } else if (hoursAgo > 0) {
+                cardStartDate.textContent = `Started ${hoursAgo} hours ago`;
+            } else {
+                cardStartDate.textContent = `Started ${minutesAgo} minutes ago`;
+            }
+            cardBody.appendChild(cardStartDate)
+            cardStartDate.classList.remove('text-muted')
+            cardStartDate.style.color = "red"
+        } else {
+            cardStartDate.textContent = `Starting date: ${jobStartDate.toLocaleDateString('en-AU')}`
+            cardBody.appendChild(cardStartDate)
+        }
         
         // How many likes it has (or none)
         const cardLikes = document.createElement('p');
