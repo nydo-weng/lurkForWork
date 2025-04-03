@@ -590,6 +590,10 @@ const showLeaveCommentModal = (job) => {
 
 const leaveComments = (job) => {
     const text = document.getElementById('comments-text').value
+    if (text.length < 8) {
+        showErrorPopup('Error', "Comment too short, at least 8 character!")
+        return
+    }
 
     const requestBody = {
         id: job.id,
