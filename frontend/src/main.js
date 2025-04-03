@@ -218,6 +218,36 @@ const createCard = (job, container) => {
         cardAuthor.textContent = `Author: ${data.name}`
         cardBody.appendChild(cardAuthor)
 
+        const cardAuthorId = job.creatorId
+        // add listener to cardAuthor
+        cardAuthor.addEventListener('click', () => {
+            // show others profile
+            showPage('others-profile')
+            // load others profile, so use 'others-profile-container' and cardAuthorId
+            const profileContainer = document.getElementById('others-profile-container');
+            loadProfile(profileContainer, cardAuthorId)
+        });
+
+        // add curosor interacting style
+        cardAuthor.style.cursor = 'pointer'
+        cardAuthor.style.display = 'inline-block'
+        // smooth the annimation
+        cardAuthor.style.transition = 'transform 0.3s ease'
+
+        // curosor on, bigger, change color
+        cardAuthor.addEventListener('mouseenter', () => {
+            cardAuthor.style.transform = 'scale(1.15)'
+            cardAuthor.style.color = '#004182'
+            cardAuthor.style.fontWeight = 'bold'
+        });
+
+        // cursor leave, back to normal, default color
+        cardAuthor.addEventListener('mouseleave', () => {
+            cardAuthor.style.transform = 'scale(1)'
+            cardAuthor.style.color = ''
+            cardAuthor.style.fontWeight = ''
+        });
+
         // When it was posted
         const cardTime = document.createElement('p')
         cardTime.classList.add('card-text', 'text-muted')
