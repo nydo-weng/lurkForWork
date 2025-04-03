@@ -124,18 +124,54 @@ document.getElementById('btn-login').addEventListener('click', () => {
     }
 });
 
-document.getElementById('btn-logout').addEventListener('click', () => {
+// clear feed-container while leaveing feed page/home page
+const clearFeed = () => {
     const feedContainer = document.getElementById('feed-container')
     const cards = feedContainer.querySelectorAll('.card')
 
     cards.forEach(card => {
         feedContainer.removeChild(card)
     });
+}
 
-    localStorage.removeItem('lurkforwork_token')
-    localStorage.removeItem('lurkforwork_userId')
-    showPage('login')
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('btn-logout')) {
+        clearFeed()
+        localStorage.removeItem('lurkforwork_token');
+        localStorage.removeItem('lurkforwork_userId');
+        showPage('login');
+    }
+
+    // clciking "Profile" btn, go to my profile
+    if (e.target.id === 'btn-my-profile') {
+        clearFeed()
+        showPage('myprofile')
+        // load my profile, so use 'my-profile-container' and current id
+        const profileContainer = document.getElementById('my-profile-container');
+        loadProfile(profileContainer, currentUserId)
+    }
+
+    if (e.target.id === 'btn-back-home') {
+        showPage('feed')
+    }
 });
+
+// document.getElementById('btn-logout').addEventListener('click', () => {
+//     const feedContainer = document.getElementById('feed-container')
+//     const cards = feedContainer.querySelectorAll('.card')
+
+//     cards.forEach(card => {
+//         feedContainer.removeChild(card)
+//     });
+
+//     localStorage.removeItem('lurkforwork_token')
+//     localStorage.removeItem('lurkforwork_userId')
+//     showPage('login')
+// });
+
+// document.getElementById('btn-user-profile').addEventListener('click', () => {
+//     showPage('profile')
+// });
 
 const showPage = (pageName) => {
     const pages = document.querySelectorAll('.page')
@@ -483,6 +519,31 @@ const loadFeed = (start = 0) => {
     });
 }
 
+// load profile for give userid to given container
+const loadProfile = (container, userId) => {
+    console.log("loding my profile")
+    apiCall(
+        `user?userId=${userId}`,
+        'GET',
+        {}
+    ).then((data) => {
+        displayProfileData(container, data)
+        
+    }).catch((error) => {
+        showErrorPopup('Error', error.message)
+    });
+}
+
+const displayProfileData = (container, userData) => {
+    console.log(userData)
+    console.log(container)
+    // clear the container
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
+    // adding things to container
+
+}
 // everytime call this function, it will take a func, and execute it at delay
 const debounce = (func, delay) => {
     let timeoutId;

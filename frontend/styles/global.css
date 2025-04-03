@@ -34,6 +34,17 @@
     margin: 0;
 }
 
+#top-bar .button-group {
+    display: flex;
+    gap: 10px;
+}
+
+#top-bar h1 .subtext {
+    font-size: clamp(12px, 4vw, 30px);
+    margin-left: 10px; 
+    opacity: 0.8; 
+}
+
 #page-feed {
     margin-top: 10vh;
 }
