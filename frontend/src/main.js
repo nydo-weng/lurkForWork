@@ -143,8 +143,16 @@ const showPage = (pageName) => {
         page.classList.add('hide')
     }
     document.getElementById(`page-${pageName}`).classList.remove('hide')
+
     if (pageName === 'feed') {
-        loadFeed()
+        // reset about load, since it could be back from logout than login
+        hasMoreJobs = true
+        const noMoreElement = document.getElementById('feed-no-more');
+        noMoreElement.style.display = 'none';
+        loadFeed(0)
+        window.addEventListener('scroll', debounce(checkScroll, 200));
+    } else {
+        window.removeEventListener('scroll', debounce(checkScroll, 200));
     }
 }
 
@@ -475,6 +483,19 @@ const loadFeed = (start = 0) => {
     });
 }
 
+// everytime call this function, it will take a func, and execute it at delay
+const debounce = (func, delay) => {
+    let timeoutId;
+    return function() {
+        const context = this;
+        const args = arguments;
+        clearTimeout(timeoutId);    // clear timeOut if there is one
+        timeoutId = setTimeout(() => {  // set new timeOut so that the functioon will execute after dealy
+            func.apply(context, args);
+        }, delay);
+    };
+};
+
 const checkScroll = () => {
     const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
     // do this while the window scroll to bottom within 100px
@@ -484,8 +505,6 @@ const checkScroll = () => {
         loadFeed(loadedCount);
     }
 }
-
-window.addEventListener('scroll', checkScroll)
 
 // Do it when the page loads
 for (const atag of document.querySelectorAll('a')) {
