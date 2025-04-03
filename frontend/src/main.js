@@ -6,9 +6,6 @@ console.log('Let\'s go!');
 
 // Function to show error popup with a custom message
 function showErrorPopup(errorLabel, errorMessage, color = 'red') {
-    // // Get the modal and the element where the error message will be displayed
-    // const modal = new bootstrap.Modal(document.getElementById('errorPopup'))
-
     const modalElement = document.getElementById('errorPopup');
 
     const modal = new bootstrap.Modal(modalElement, {
@@ -71,17 +68,16 @@ document.getElementById('btn-register').addEventListener('click', () => {
     const passwordConfirm = document.getElementById('register-password-confirm').value
 
     // need to comment back
-    // const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-    // const nameRegex = /^[A-Za-z' -]+$/
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+    const nameRegex = /^[A-Za-z' -]+$/
 
-    // if (!emailRegex.test(email)) {
-    //     showErrorPopup('Error', "Please enter a valid email address.")
-    // } else if (!nameRegex.test(name)) {
-    //     showErrorPopup('Error', 'Please enter a valid name.')
-    // } else if (password.length < 6) {
-    //     showErrorPopup('Error', 'The password must be at least 6 characters.')
-    // } else if (password !== passwordConfirm) {
-    if (password !== passwordConfirm) {
+    if (!emailRegex.test(email)) {
+        showErrorPopup('Error', "Please enter a valid email address.")
+    } else if (!nameRegex.test(name)) {
+        showErrorPopup('Error', 'Please enter a valid name.')
+    } else if (password.length < 6) {
+        showErrorPopup('Error', 'The password must be at least 6 characters.')
+    } else if (password !== passwordConfirm) {
         showErrorPopup('Error', "The two passwords don't match, please check!")
     } else {
         apiCall(
@@ -109,14 +105,13 @@ document.getElementById('btn-login').addEventListener('click', () => {
     const password = document.getElementById('login-password').value
 
     // need to comment back
-    // const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 
-    // if (!emailRegex.test(email)) {
-    //     showErrorPopup('Error', "Please enter a valid email address.")
-    // } else if (password.length < 6) {
-    //     showErrorPopup('Error', 'The password must be at least 6 characters.')
-    // } else {
-    if (true) {
+    if (!emailRegex.test(email)) {
+        showErrorPopup('Error', "Please enter a valid email address.")
+    } else if (password.length < 6) {
+        showErrorPopup('Error', 'The password must be at least 6 characters.')
+    } else {
         apiCall(
             'auth/login',
             'POST',
