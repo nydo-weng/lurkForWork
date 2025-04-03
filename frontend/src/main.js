@@ -153,11 +153,23 @@ document.addEventListener('click', (e) => {
     }
 
     if (e.target.classList.contains('btn-back-home')) {
+        clearFeed()
         showPage('feed')
     }
 });
 
 const showPage = (pageName) => {
+    // remove jobs from profile while page change
+    const jobContainers = document.getElementsByClassName('profile-job-container')
+
+    for (const jobContainer of jobContainers) {
+        const cards = jobContainer.querySelectorAll('.card')
+
+        cards.forEach(card => {
+            jobContainer.removeChild(card)
+        });
+    }
+
     const pages = document.querySelectorAll('.page')
     for (const page of pages) {
         page.classList.add('hide')
