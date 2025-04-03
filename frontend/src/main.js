@@ -479,6 +479,8 @@ const checkCommentsList = (job) => {
         for (const commentData of job.comments) {
             const commentContent = commentData.comment
             const commentBy = commentData.userName
+            // used to go user profile
+            const commentUserId = commentData.userId
 
             const commentBlock = document.createElement('div')
             commentBlock.classList.add('job-modal-block')
@@ -490,6 +492,38 @@ const checkCommentsList = (job) => {
             const commentContentElement = document.createElement('p')
             commentContentElement.textContent = '"' + commentContent + '"'
             commentContentElement.classList.add('job-modal-text')
+
+            // add listener to userNameSpan
+            userNameSpan.addEventListener('click', () => {
+                // close jobCommentsModal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('jobCommentsModal'));
+                modal.hide();
+                // show others profile
+                showPage('others-profile')
+                // load others profile, so use 'others-profile-container' and likedUserId
+                const profileContainer = document.getElementById('others-profile-container');
+                loadProfile(profileContainer, commentUserId)
+            });
+
+            // add curosor interacting style
+            userNameSpan.style.cursor = 'pointer'
+            userNameSpan.style.display = 'inline-block'
+            // smooth the annimation
+            userNameSpan.style.transition = 'transform 0.3s ease'
+
+            // curosor on, bigger, change color
+            userNameSpan.addEventListener('mouseenter', () => {
+                userNameSpan.style.transform = 'scale(1.15)'
+                userNameSpan.style.color = '#004182'
+                userNameSpan.style.fontWeight = 'bold'
+            });
+
+            // cursor leave, back to normal, default color
+            userNameSpan.addEventListener('mouseleave', () => {
+                userNameSpan.style.transform = 'scale(1)'
+                userNameSpan.style.color = ''
+                userNameSpan.style.fontWeight = ''
+            });
 
             commentBlock.appendChild(userNameSpan)
             commentBlock.appendChild(commentContentElement)
