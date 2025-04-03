@@ -300,8 +300,7 @@ const watchSearchedUser = () => {
 
 const showPage = (pageName) => {
     // remove jobs from profile while page change
-    // const jobContainers = document.getElementsByClassName('profile-job-container')
-    const jobContainers = document.getElementsByClassName('feed-container')
+    const jobContainers = document.getElementsByClassName('profile-job-container')
 
     for (const jobContainer of jobContainers) {
         const cards = jobContainer.querySelectorAll('.card')
