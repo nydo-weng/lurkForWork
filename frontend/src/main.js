@@ -454,11 +454,21 @@ const checkLikesList = (job) => {
                 // close jobLikesModal
                 const modal = bootstrap.Modal.getInstance(document.getElementById('jobLikesModal'));
                 modal.hide();
-                // show others profile
-                showPage('others-profile')
-                // load others profile, so use 'others-profile-container' and likedUserId
-                const profileContainer = document.getElementById('others-profile-container');
-                loadProfile(profileContainer, likedUserId)
+                
+                // if go to the user profile with same id with currentuserid, go my profile
+                if (parseInt(likedUserId) === parseInt(currentUserId)) {
+                    // show my profile
+                    showPage('my-profile')
+                    // load my profile, so use 'others-profile-container' and currentUserId
+                    const profileContainer = document.getElementById('my-profile-container');
+                    loadProfile(profileContainer, currentUserId)
+                } else {
+                    // show others profile
+                    showPage('others-profile')
+                    // load others profile, so use 'others-profile-container' and likedUserId
+                    const profileContainer = document.getElementById('others-profile-container');
+                    loadProfile(profileContainer, likedUserId)
+                }
             });
 
             // add curosor interacting style
@@ -528,11 +538,22 @@ const checkCommentsList = (job) => {
                 // close jobCommentsModal
                 const modal = bootstrap.Modal.getInstance(document.getElementById('jobCommentsModal'));
                 modal.hide();
-                // show others profile
-                showPage('others-profile')
-                // load others profile, so use 'others-profile-container' and likedUserId
-                const profileContainer = document.getElementById('others-profile-container');
-                loadProfile(profileContainer, commentUserId)
+
+                // if go to the user profile with same id with currentuserid, go my profile
+                if (parseInt(commentUserId) === parseInt(currentUserId)) {
+                    // show my profile
+                    showPage('my-profile')
+                    // load my profile, so use 'others-profile-container' and currentUserId
+                    const profileContainer = document.getElementById('my-profile-container');
+                    loadProfile(profileContainer, currentUserId)
+                } else {
+                    // show others profile
+                    showPage('others-profile')
+                    // load others profile, so use 'others-profile-container' and commentUserId
+                    const profileContainer = document.getElementById('others-profile-container');
+                    loadProfile(profileContainer, commentUserId)
+                }
+
             });
 
             // add curosor interacting style
@@ -787,6 +808,7 @@ const checkScroll = () => {
     // do this while the window scroll to bottom within 100px
     if (scrollTop + clientHeight > scrollHeight - 100) {
         const loadedCount = document.querySelectorAll('.count-job-card').length;
+        console.log("loadedcount")
         console.log(loadedCount)
         loadFeed(loadedCount);
     }
