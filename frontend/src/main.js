@@ -194,9 +194,12 @@ const addJob = () => {
     console.log("adding job")
     const title = document.getElementById('add-job-title').value
 
-    const yyyyMmDd = document.getElementById('add-job-date').value
-    const [year, month, day] = yyyyMmDd.split('-');
-    const date = `${day}/${month}/${year}`;
+    const dateInput = document.getElementById('add-job-date').value
+    const dateObj = new Date(dateInput)
+    // convert to the format server required
+    const date = dateObj.toISOString();
+
+    console.log(date)
 
     const description = document.getElementById('add-job-description').value
     const imageFile = document.getElementById('add-job-image').files[0]
