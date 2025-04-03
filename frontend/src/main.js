@@ -541,9 +541,57 @@ const displayProfileData = (container, userData) => {
     while (container.firstChild) {
         container.removeChild(container.firstChild);
     }
-    // adding things to container
 
+    // adding things to container
+    // create a profileCard
+    const profileCard = document.createElement('div');
+    profileCard.className = 'profile-card';
+    
+    // create a header which contain name and email
+    const profileHeader = document.createElement('div');
+    profileHeader.className = 'profile-header';
+    
+    const userName = document.createElement('h2');
+    userName.className = 'profile-name';
+    userName.textContent = userData.name;
+    
+    const userEmail = document.createElement('p');
+    userEmail.className = 'profile-email';
+    userEmail.textContent = userData.email;
+    
+    profileHeader.appendChild(userName);
+    profileHeader.appendChild(userEmail);
+    
+    // create a container to contain job created by this user
+    const jobContainer = document.createElement('div');
+    jobContainer.className = 'profile-job-container';
+    
+    // create a section for watcher who watching this profile
+    const watcherSection = document.createElement('div');
+    watcherSection.className = 'watcher-section';
+    
+    const watcherNumber = document.createElement('span');
+    watcherNumber.className = 'watcher-number';
+    watcherNumber.textContent = userData.usersWhoWatchMeUserIds.length;
+    console.log(`${userData.usersWhoWatchMeUserIds.length} watching this profile`)
+    
+    const watchersLabel = document.createElement('span');
+    watchersLabel.className = 'stat-label';
+    watchersLabel.textContent = 'Users watching:';
+    
+    // use to display job and watcher side by side
+    const contentContainer = document.createElement('div');
+    contentContainer.className = 'profile-content';
+    
+    contentContainer.appendChild(jobContainer);
+    contentContainer.appendChild(watcherSection);
+    
+    profileCard.appendChild(profileHeader);
+    profileCard.appendChild(contentContainer);
+    
+    container.appendChild(profileCard);
 }
+
 // everytime call this function, it will take a func, and execute it at delay
 const debounce = (func, delay) => {
     let timeoutId;

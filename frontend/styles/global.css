@@ -45,7 +45,7 @@
     opacity: 0.8; 
 }
 
-#page-feed {
+#page-feed, #page-myprofile {
     margin-top: 10vh;
 }
 
@@ -93,4 +93,16 @@
     font-size: 1.25rem;
     font-weight: bold;
     color: #007bff;
+}
+
+@media (max-width: 600px) {
+    #top-bar h1 {   /* don't display h1 since there will be no space in one line*/
+        font-size: 0; 
+    }
+    #top-bar h1 .subtext {  /* only show subtext, but with h1's style */
+        color: #0A66C2;
+        font-size: clamp(24px, 8vw, 60px);
+        margin: 0;
+        opacity: 1;
+    }
 }
