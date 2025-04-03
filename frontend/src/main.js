@@ -684,8 +684,6 @@ const displayProfileData = (container, userData) => {
     const avatarImg = document.createElement('img');
     avatarImg.className = 'avatar-image';
     // Set avatar source, use default if not available
-    console.log("here")
-    console.log(userData.image)
     avatarImg.src = userData.image || 'https://odin-project-google-homepage-clone.vercel.app/images/google-account.png';
     avatarImg.alt = `${userData.name}'s avatar`;
 
@@ -718,10 +716,34 @@ const displayProfileData = (container, userData) => {
         })
     } else {
         profileButton.id = 'btn-watch-profile';
-        profileButton.textContent = 'Watch this profile';
+        let watchFlag = true
+
+        if (userData.usersWhoWatchMeUserIds.length === 0) {
+            // // no one waching, not watch yet, watching this user
+            // watchByEmail(userData, true)
+            watchFlag = true
+        } else {
+            for (const userId of userData.usersWhoWatchMeUserIds) {
+                if (parseInt(currentUserId) === parseInt(userId)) {
+                    // // already watching this user, unwatch this
+                    // watchByEmail(userData, false)
+                    watchFlag = false
+                    break
+                } 
+                // not go inside if true, watchFlag remain true
+                    // // not watch yet, watching this user
+                    // watchByEmail(userData, true)
+                    // watchFlag = true
+            }
+        }
+        if (watchFlag) {
+            profileButton.textContent = 'Watch this profile 👀';
+        } else {
+            profileButton.textContent = 'Unwatch this profile 🙈';
+        }
         profileButton.addEventListener('click', () => {
-            watchOtherUser(userData)
-        })
+            watchByEmail(userData, watchFlag)
+        });
     }
 
     profileHeader.appendChild(avatarContainer);
@@ -794,45 +816,31 @@ const displayProfileData = (container, userData) => {
     }
 }
 
-// watching / watching a user with given user id
-const watchOtherUser = (userData) => {
-    if (userData.usersWhoWatchMeUserIds.length === 0) {
-        // no one waching, not watch yet, watching this user
-        watchByEmail(userData)
-    } else {
-        for (const userId of userData.usersWhoWatchMeUserIds) {
-            console.log(userId)
-            if (parseInt(currentUserId) === parseInt(userId)) {
-                // already watching this user, unwatch this
-                console.log("already watched, unwatching")
-            } else {
-                // not watch yet, watching this user
-                watchByEmail(userData)
-            }
-        }
-    }
-}
-
-const watchByEmail = (userData) => {
+const watchByEmail = (userData, watchFlag) => {
     console.log(userData.email)
     apiCall(
         'user/watch',
         'PUT',
         {
             email: userData.email,
-            turnon: true
+            turnon: watchFlag
         }
     ).then(() => {
         // reach here if backend ok with this watch
-        alert(`You are watching ${userData.name}`)
-        
+        if (watchFlag) {
+            alert(`You are watching ${userData.name}`)
+        } else {
+            alert(`You are unwatched ${userData.name}`)
+        }
+
         // reload the other profile page
         clearFeed()
-        showPage('other-profile')
+        showPage('others-profile')
         // load other profile, so use 'other-profile-container' and other's id
-        const profileContainer = document.getElementById('othes-profile-container');
+        const profileContainer = document.getElementById('others-profile-container');
         loadProfile(profileContainer, userData.id)
     }).catch((error) => {
+        console.log(error)
         showErrorPopup('Error', error.message)
     });
 }
@@ -909,7 +917,7 @@ const sendUpdateRequest = (requestBody) => {
         // load my profile, so use 'my-profile-container' and current id
         const profileContainer = document.getElementById('my-profile-container');
         loadProfile(profileContainer, currentUserId)
-    
+
         // close the updateprofilemodal
         const modal = bootstrap.Modal.getInstance(
             document.getElementById('updateProfileModal')
