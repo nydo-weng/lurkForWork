@@ -187,6 +187,10 @@
     height: 75vh;
 }
 
+.btn-small {
+    display: none;
+}
+
 @media (max-width: 750px) {
     .profile-content {
         flex-direction: column;
@@ -211,5 +215,13 @@
 
     .profile-avatar {
         display: none;
-      }
+    }
+
+    .btn-big {
+        display: none;
+    }
+
+    .btn-small {
+        display: block;
+    }
 }
