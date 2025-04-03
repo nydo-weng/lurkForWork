@@ -5,12 +5,12 @@ import { fileToDataUrl } from './helpers.js';
 console.log('Let\'s go!');
 
 // Function to show error popup with a custom message
-function showErrorPopup(errorLabel, errorMessage, color='red') {
+function showErrorPopup(errorLabel, errorMessage, color = 'red') {
     // // Get the modal and the element where the error message will be displayed
     // const modal = new bootstrap.Modal(document.getElementById('errorPopup'))
 
     const modalElement = document.getElementById('errorPopup');
-    
+
     const modal = new bootstrap.Modal(modalElement, {
         backdrop: true,
         keyboard: true
@@ -205,13 +205,13 @@ const addJob = () => {
 
     const description = document.getElementById('add-job-description').value
     const imageFile = document.getElementById('add-job-image').files[0]
-    
+
     const requestBody = {
         title: title,
         start: date,
         description: description
     }
-    
+
     if (!imageFile) {
         sendAddJobRequest(requestBody)
     } else {
@@ -563,8 +563,8 @@ const createCard = (job, container) => {
             updateJobButton.textContent = `Update Job`
             cardBody.appendChild(updateJobButton)
             updateJobButton.style.marginTop = "20px"
-            
-            
+
+
             const deleteJobButton = document.createElement('button')
             // make the button red
             deleteJobButton.classList.add('btn', 'btn-danger')
@@ -611,7 +611,7 @@ const leaveComments = (job) => {
 
     const requestBody = {
         id: job.id,
-        comment: text 
+        comment: text
     }
     sendLeaveCommentsRequest(requestBody)
 }
@@ -689,14 +689,14 @@ const updateJob = (job) => {
 
     const description = document.getElementById('update-job-description').value
     const imageFile = document.getElementById('update-job-image').files[0]
-    
+
     const requestBody = {
         id: job.id,
         title: title || undefined,
         start: date || undefined,
         description: description || undefined
     }
-    
+
     if (!imageFile) {
         sendUpdateJobRequest(requestBody)
     } else {
@@ -759,7 +759,7 @@ const reloadPage = () => {
         // load others profile, so use 'others-profile-container' and 
         const profileContainer = document.getElementById('others-profile-container');
         currentProfileId = loadProfile(profileContainer, currentProfileId)
-    }        
+    }
 }
 
 const unlikeJob = (jobId, likeJobButton) => {
@@ -814,7 +814,7 @@ const checkLikesList = (job) => {
     while (modalContent.firstChild) {
         modalContent.removeChild(modalContent.firstChild)
     }
-    
+
     // adding like for current job
     for (const like of job.likes) {
         const likedUserName = like.userName
@@ -881,7 +881,7 @@ const checkLikesList = (job) => {
 
         modalContent.appendChild(likeBlock)
     }
-    
+
 
     const modal = new bootstrap.Modal(document.getElementById('jobLikesModal'))
     modal.show()
@@ -1092,11 +1092,11 @@ const displayProfileData = (container, userData) => {
                     // watchByEmail(userData, false)
                     watchFlag = false
                     break
-                } 
+                }
                 // not go inside if true, watchFlag remain true
-                    // // not watch yet, watching this user
-                    // watchByEmail(userData, true)
-                    // watchFlag = true
+                // // not watch yet, watching this user
+                // watchByEmail(userData, true)
+                // watchFlag = true
             }
         }
         if (watchFlag) {
