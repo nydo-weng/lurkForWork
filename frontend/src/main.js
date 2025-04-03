@@ -495,11 +495,11 @@ const createCard = (job, container) => {
         });
         cardBody.appendChild(cardLikesButton)
 
-        // add space between likes and like a job
-        const spaceSpan = document.createElement('span')
-        spaceSpan.style.display = 'inline-block'
-        spaceSpan.style.width = 'clamp(5px, 5vw, 25px)'
-        cardBody.appendChild(spaceSpan)
+        // // add space between likes and like a job
+        // const spaceSpan = document.createElement('span')
+        // spaceSpan.style.display = 'inline-block'
+        // spaceSpan.style.width = 'clamp(5px, 5vw, 25px)'
+        // cardBody.appendChild(spaceSpan)
 
         // 2.3.3 like a job
         const likeJobButton = document.createElement('button')
@@ -524,7 +524,7 @@ const createCard = (job, container) => {
             likeJobButton.textContent = `Like the job ❤️ `
             likeJobButton.addEventListener('click', handleLikeClick)
         }
-
+        likeJobButton.style.marginLeft = "56px"
         cardBody.appendChild(likeJobButton)
 
         const breakLine = document.createElement('br')
@@ -539,6 +539,13 @@ const createCard = (job, container) => {
             console.log(`this job is ${job.id}`)
         });
         cardBody.appendChild(cardCommentsButton)
+
+        // 2.5.3 leaving comments
+        const leaveCommentButton = document.createElement('button')
+        leaveCommentButton.classList.add('btn', 'btn-link', 'p-0')
+        leaveCommentButton.textContent = `Leave your comments 🖋`
+        leaveCommentButton.style.marginLeft = "30px"
+        cardBody.appendChild(leaveCommentButton)
 
         // delete & updating 
         // job belong current user, show update and delet button
@@ -633,8 +640,6 @@ const updateJob = (job) => {
         start: date || undefined,
         description: description || undefined
     }
-
-    console.log(requestBody)
     
     if (!imageFile) {
         sendUpdateJobRequest(requestBody)
@@ -753,76 +758,74 @@ const checkLikesList = (job) => {
     while (modalContent.firstChild) {
         modalContent.removeChild(modalContent.firstChild)
     }
-    let repeat = 5
-    while (repeat > 0) {
-        repeat = repeat - 1
-        // adding like for current job
-        for (const like of job.likes) {
-            const likedUserName = like.userName
-            // used to go user profile
-            const likedUserId = like.userId
+    
+    // adding like for current job
+    for (const like of job.likes) {
+        const likedUserName = like.userName
+        // used to go user profile
+        const likedUserId = like.userId
 
-            const likeBlock = document.createElement('div')
-            likeBlock.classList.add('job-modal-block')
+        const likeBlock = document.createElement('div')
+        likeBlock.classList.add('job-modal-block')
 
-            const userNameElement = document.createElement('p')
-            userNameElement.classList.add('job-modal-text')
+        const userNameElement = document.createElement('p')
+        userNameElement.classList.add('job-modal-text')
 
-            const userNameSpan = document.createElement('span');
-            userNameSpan.textContent = likedUserName;
-            userNameSpan.classList.add('username-modal-style');
-            const likedText = document.createTextNode(' liked this job ❤️');
+        const userNameSpan = document.createElement('span');
+        userNameSpan.textContent = likedUserName;
+        userNameSpan.classList.add('username-modal-style');
+        const likedText = document.createTextNode(' liked this job ❤️');
 
-            // add listener to userNameSpan
-            userNameSpan.addEventListener('click', () => {
-                // close jobLikesModal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('jobLikesModal'));
-                modal.hide();
+        // add listener to userNameSpan
+        userNameSpan.addEventListener('click', () => {
+            // close jobLikesModal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('jobLikesModal'));
+            modal.hide();
 
-                // if go to the user profile with same id with currentuserid, go my profile
-                if (parseInt(likedUserId) === parseInt(currentUserId)) {
-                    // show my profile
-                    currentPage = showPage('my-profile')
-                    // load my profile, so use 'others-profile-container' and currentUserId
-                    const profileContainer = document.getElementById('my-profile-container');
-                    currentProfileId = loadProfile(profileContainer, currentUserId)
-                } else {
-                    // show others profile
-                    currentPage = showPage('others-profile')
-                    // load others profile, so use 'others-profile-container' and likedUserId
-                    const profileContainer = document.getElementById('others-profile-container');
-                    currentProfileId = loadProfile(profileContainer, likedUserId)
-                }
-            });
+            // if go to the user profile with same id with currentuserid, go my profile
+            if (parseInt(likedUserId) === parseInt(currentUserId)) {
+                // show my profile
+                currentPage = showPage('my-profile')
+                // load my profile, so use 'others-profile-container' and currentUserId
+                const profileContainer = document.getElementById('my-profile-container');
+                currentProfileId = loadProfile(profileContainer, currentUserId)
+            } else {
+                // show others profile
+                currentPage = showPage('others-profile')
+                // load others profile, so use 'others-profile-container' and likedUserId
+                const profileContainer = document.getElementById('others-profile-container');
+                currentProfileId = loadProfile(profileContainer, likedUserId)
+            }
+        });
 
-            // add curosor interacting style
-            userNameSpan.style.cursor = 'pointer'
-            userNameSpan.style.display = 'inline-block'
-            // smooth the annimation
-            userNameSpan.style.transition = 'transform 0.3s ease'
+        // add curosor interacting style
+        userNameSpan.style.cursor = 'pointer'
+        userNameSpan.style.display = 'inline-block'
+        // smooth the annimation
+        userNameSpan.style.transition = 'transform 0.3s ease'
 
-            // curosor on, bigger, change color
-            userNameSpan.addEventListener('mouseenter', () => {
-                userNameSpan.style.transform = 'scale(1.15)'
-                userNameSpan.style.color = '#004182'
-                userNameSpan.style.fontWeight = 'bold'
-            });
+        // curosor on, bigger, change color
+        userNameSpan.addEventListener('mouseenter', () => {
+            userNameSpan.style.transform = 'scale(1.15)'
+            userNameSpan.style.color = '#004182'
+            userNameSpan.style.fontWeight = 'bold'
+        });
 
-            // cursor leave, back to normal, default color
-            userNameSpan.addEventListener('mouseleave', () => {
-                userNameSpan.style.transform = 'scale(1)'
-                userNameSpan.style.color = ''
-                userNameSpan.style.fontWeight = ''
-            });
+        // cursor leave, back to normal, default color
+        userNameSpan.addEventListener('mouseleave', () => {
+            userNameSpan.style.transform = 'scale(1)'
+            userNameSpan.style.color = ''
+            userNameSpan.style.fontWeight = ''
+        });
 
-            userNameElement.appendChild(userNameSpan);
-            userNameElement.appendChild(likedText);
+        userNameElement.appendChild(userNameSpan);
+        userNameElement.appendChild(likedText);
 
-            likeBlock.appendChild(userNameElement)
+        likeBlock.appendChild(userNameElement)
 
-            modalContent.appendChild(likeBlock)
-        }
+        modalContent.appendChild(likeBlock)
     }
+    
 
     const modal = new bootstrap.Modal(document.getElementById('jobLikesModal'))
     modal.show()
