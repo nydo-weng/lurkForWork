@@ -871,76 +871,73 @@ const checkCommentsList = (job) => {
         modalContent.removeChild(modalContent.firstChild)
     }
 
-    let repeat = 25
-    while (repeat > 0) {
-        repeat = repeat - 1
-        // adding comment for current job
-        for (const commentData of job.comments) {
-            const commentContent = commentData.comment
-            const commentBy = commentData.userName
-            // used to go user profile
-            const commentUserId = commentData.userId
+    // adding comment for current job
+    for (const commentData of job.comments) {
+        const commentContent = commentData.comment
+        const commentBy = commentData.userName
+        // used to go user profile
+        const commentUserId = commentData.userId
 
-            const commentBlock = document.createElement('div')
-            commentBlock.classList.add('job-modal-block')
+        const commentBlock = document.createElement('div')
+        commentBlock.classList.add('job-modal-block')
 
-            const userNameSpan = document.createElement('span')
-            userNameSpan.textContent = '💬 ' + commentBy + ':'
-            userNameSpan.classList.add('username-modal-style')
+        const userNameSpan = document.createElement('span')
+        userNameSpan.textContent = '💬 ' + commentBy + ':'
+        userNameSpan.classList.add('username-modal-style')
 
-            const commentContentElement = document.createElement('p')
-            commentContentElement.textContent = '"' + commentContent + '"'
-            commentContentElement.classList.add('job-modal-text')
+        const commentContentElement = document.createElement('p')
+        commentContentElement.textContent = '"' + commentContent + '"'
+        commentContentElement.classList.add('job-modal-text')
 
-            // add listener to userNameSpan
-            userNameSpan.addEventListener('click', () => {
-                // close jobCommentsModal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('jobCommentsModal'));
-                modal.hide();
+        // add listener to userNameSpan
+        userNameSpan.addEventListener('click', () => {
+            // close jobCommentsModal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('jobCommentsModal'));
+            modal.hide();
 
-                // if go to the user profile with same id with currentuserid, go my profile
-                if (parseInt(commentUserId) === parseInt(currentUserId)) {
-                    // show my profile
-                    currentPage = showPage('my-profile')
-                    // load my profile, so use 'others-profile-container' and currentUserId
-                    const profileContainer = document.getElementById('my-profile-container');
-                    currentProfileId = loadProfile(profileContainer, currentUserId)
-                } else {
-                    // show others profile
-                    currentPage = showPage('others-profile')
-                    // load others profile, so use 'others-profile-container' and commentUserId
-                    const profileContainer = document.getElementById('others-profile-container');
-                    currentProfileId = loadProfile(profileContainer, commentUserId)
-                }
+            // if go to the user profile with same id with currentuserid, go my profile
+            if (parseInt(commentUserId) === parseInt(currentUserId)) {
+                // show my profile
+                currentPage = showPage('my-profile')
+                // load my profile, so use 'others-profile-container' and currentUserId
+                const profileContainer = document.getElementById('my-profile-container');
+                currentProfileId = loadProfile(profileContainer, currentUserId)
+            } else {
+                // show others profile
+                currentPage = showPage('others-profile')
+                // load others profile, so use 'others-profile-container' and commentUserId
+                const profileContainer = document.getElementById('others-profile-container');
+                currentProfileId = loadProfile(profileContainer, commentUserId)
+            }
 
-            });
+        });
 
-            // add curosor interacting style
-            userNameSpan.style.cursor = 'pointer'
-            userNameSpan.style.display = 'inline-block'
-            // smooth the annimation
-            userNameSpan.style.transition = 'transform 0.3s ease'
+        // add curosor interacting style
+        userNameSpan.style.cursor = 'pointer'
+        userNameSpan.style.display = 'inline-block'
+        // smooth the annimation
+        userNameSpan.style.transition = 'transform 0.3s ease'
 
-            // curosor on, bigger, change color
-            userNameSpan.addEventListener('mouseenter', () => {
-                userNameSpan.style.transform = 'scale(1.15)'
-                userNameSpan.style.color = '#004182'
-                userNameSpan.style.fontWeight = 'bold'
-            });
+        // curosor on, bigger, change color
+        userNameSpan.addEventListener('mouseenter', () => {
+            userNameSpan.style.transform = 'scale(1.15)'
+            userNameSpan.style.color = '#004182'
+            userNameSpan.style.fontWeight = 'bold'
+        });
 
-            // cursor leave, back to normal, default color
-            userNameSpan.addEventListener('mouseleave', () => {
-                userNameSpan.style.transform = 'scale(1)'
-                userNameSpan.style.color = ''
-                userNameSpan.style.fontWeight = ''
-            });
+        // cursor leave, back to normal, default color
+        userNameSpan.addEventListener('mouseleave', () => {
+            userNameSpan.style.transform = 'scale(1)'
+            userNameSpan.style.color = ''
+            userNameSpan.style.fontWeight = ''
+        });
 
-            commentBlock.appendChild(userNameSpan)
-            commentBlock.appendChild(commentContentElement)
+        commentBlock.appendChild(userNameSpan)
+        commentBlock.appendChild(commentContentElement)
 
-            modalContent.appendChild(commentBlock)
-        }
+        modalContent.appendChild(commentBlock)
     }
+    
 
     const modal = new bootstrap.Modal(document.getElementById('jobCommentsModal'))
     modal.show()
