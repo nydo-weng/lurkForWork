@@ -611,7 +611,72 @@ const showUpdateJobModal = (job) => {
     });
 }
 
+// show updatejob modal
+const updateJob = (job) => {
+    const title = document.getElementById('update-job-title').value
 
+    const dateInput = document.getElementById('update-job-date').value
+    let date
+    if (!date) {
+        date = undefined
+    } else {
+        const dateObj = new Date(dateInput)
+        date = dateObj.toISOString();
+    }
+
+    const description = document.getElementById('update-job-description').value
+    const imageFile = document.getElementById('update-job-image').files[0]
+    
+    const requestBody = {
+        id: job.id,
+        title: title || undefined,
+        start: date || undefined,
+        description: description || undefined
+    }
+
+    console.log(requestBody)
+    
+    if (!imageFile) {
+        sendUpdateJobRequest(requestBody)
+    } else {
+        fileToDataUrl(imageFile).then((dataUrl) => {
+            requestBody.image = dataUrl
+            sendUpdateJobRequest(requestBody)
+        }).catch((error) => {
+            console.log(error)
+            showErrorPopup('Error', error.message)
+        });
+    }
+}
+
+const sendUpdateJobRequest = (requestBody) => {
+    console.log("sending update job request to server")
+    apiCall(
+        'job',
+        'PUT',
+        requestBody
+    ).then(() => {
+        // reach here if backend ok with this job update
+        showErrorPopup('Job Updated', "Job updated successfully", 'blue')
+
+        // empty the form
+        document.getElementById('update-job-title').value = ''
+        document.getElementById('update-job-date').value = ''
+        document.getElementById('update-job-description').value = ''
+        document.getElementById('update-job-image').value = ''
+
+        // close the updateJobModal after updated
+        const modal = bootstrap.Modal.getInstance(
+            document.getElementById('updateJobModal')
+        )
+        modal.hide()
+        // reload page
+        reloadPage()
+    }).catch((error) => {
+        // remain modal open if faild
+        showErrorPopup('Error', error.message)
+    });
+}
 
 
 const reloadPage = () => {
@@ -635,8 +700,6 @@ const reloadPage = () => {
         currentProfileId = loadProfile(profileContainer, currentProfileId)
     }        
 }
-
-
 
 const unlikeJob = (jobId, likeJobButton) => {
     apiCall(
