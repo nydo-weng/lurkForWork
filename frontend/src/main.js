@@ -233,11 +233,20 @@ const createCard = (job, container) => {
         const cardAuthorId = job.creatorId
         // add listener to cardAuthor
         cardAuthor.addEventListener('click', () => {
-            // show others profile
-            showPage('others-profile')
-            // load others profile, so use 'others-profile-container' and cardAuthorId
-            const profileContainer = document.getElementById('others-profile-container');
-            loadProfile(profileContainer, cardAuthorId)
+            // if go to the user profile with same id with currentuserid, go my profile
+            if (parseInt(cardAuthorId) === parseInt(currentUserId)) {
+                // show my profile
+                showPage('my-profile')
+                // load my profile, so use 'others-profile-container' and currentUserId
+                const profileContainer = document.getElementById('my-profile-container');
+                loadProfile(profileContainer, currentUserId)
+            } else {
+                // show others profile
+                showPage('others-profile')
+                // load others profile, so use 'others-profile-container' and cardAuthorId
+                const profileContainer = document.getElementById('others-profile-container');
+                loadProfile(profileContainer, cardAuthorId)
+            }
         });
 
         // add curosor interacting style
@@ -676,8 +685,29 @@ const displayProfileData = (container, userData) => {
     userEmail.className = 'profile-email';
     userEmail.textContent = `Email: ${userData.email}`;
     
-    profileHeader.appendChild(userName);
-    profileHeader.appendChild(userEmail);
+    // Create the profile button with funtion wanted
+    const profileButton = document.createElement('button');
+    profileButton.className = 'btn btn-primary';
+
+    if (parseInt(currentUserId) === parseInt(userData.id)) {
+        // should be my profile, add button to update profile
+        profileButton.id = 'btn-update-profile';
+        profileButton.textContent = 'Update my profile';
+    } else {
+        // should be others profile, add button to watch them
+        profileButton.id = 'btn-watch-profile';
+        profileButton.textContent = 'Watch this profile';
+    }
+
+    // Create a div for the text content (name and email)
+    const textContent = document.createElement('div');
+    textContent.className = 'profile-text-content';
+    textContent.appendChild(userName);
+    textContent.appendChild(userEmail);
+    
+    // Add both the text content and button to the header
+    profileHeader.appendChild(textContent);
+    profileHeader.appendChild(profileButton);
     
     // create a container to contain job created by this user
     const jobContainer = document.createElement('div');
@@ -759,7 +789,6 @@ const addWatcher = (watcherId, container) => {
         {}
     ).then((data) => {
         const watcherName = data.name
-        console.log(watcherName)
 
         const watcherBlock = document.createElement('div')
         watcherBlock.classList.add('profile-watcher-name-block')
@@ -770,10 +799,21 @@ const addWatcher = (watcherId, container) => {
 
         // add listener so that can go to watchers profile
         watcherBlock.addEventListener('click', () => {
-            showPage('others-profile')
-            // load others profile, so use 'others-profile-container' and current id
-            const profileContainer = document.getElementById('others-profile-container');
-            loadProfile(profileContainer, watcherId)
+
+            // if go to the user profile with same id with currentuserid, go my profile
+            if (parseInt(watcherId) === parseInt(currentUserId)) {
+                // show my profile
+                showPage('my-profile')
+                // load my profile, so use 'others-profile-container' and currentUserId
+                const profileContainer = document.getElementById('my-profile-container');
+                loadProfile(profileContainer, currentUserId)
+            } else {
+                // show others profile
+                showPage('others-profile')
+                // load others profile, so use 'others-profile-container' and watcherId
+                const profileContainer = document.getElementById('others-profile-container');
+                loadProfile(profileContainer, watcherId)
+            }
         });
 
         // add curosor interacting style
