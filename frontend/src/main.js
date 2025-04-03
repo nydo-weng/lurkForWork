@@ -785,6 +785,7 @@ const unlikeJob = (jobId, likeJobButton) => {
         const handleLikeClick = () => likeJob(jobId, newlikeJobButton);
         newlikeJobButton.textContent = `Like the job ❤️ `
         newlikeJobButton.addEventListener('click', handleLikeClick)
+        reloadPage()
     }).catch((error) => {
         showErrorPopup('Error', error.message)
     });
@@ -808,6 +809,7 @@ const likeJob = (jobId, likeJobButton) => {
         const handleUnlikeClick = () => unlikeJob(jobId, newlikeJobButton);
         newlikeJobButton.textContent = `Unlike the job 💔`
         newlikeJobButton.addEventListener('click', handleUnlikeClick)
+        reloadPage()
     }).catch((error) => {
         showErrorPopup('Error', error.message)
     });
