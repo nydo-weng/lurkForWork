@@ -677,35 +677,48 @@ const displayProfileData = (container, userData) => {
     const profileHeader = document.createElement('div');
     profileHeader.className = 'profile-header';
     
+    // Create avatar container (leftmost element)
+    const avatarContainer = document.createElement('div');
+    avatarContainer.className = 'profile-avatar';
+    
+    const avatarImg = document.createElement('img');
+    avatarImg.className = 'avatar-image';
+    // Set avatar source, use default if not available
+    console.log("here")
+    console.log(userData.image)
+    avatarImg.src = userData.image || 'https://odin-project-google-homepage-clone.vercel.app/images/google-account.png';
+    avatarImg.alt = `${userData.name}'s avatar`;
+    
+    avatarContainer.appendChild(avatarImg);
+    
+    // Create text content (name and email)
+    const textContent = document.createElement('div');
+    textContent.className = 'profile-text-content';
+
     const userName = document.createElement('h2');
     userName.className = 'profile-name';
     userName.textContent = `Name: ${userData.name}`;
-    
+
     const userEmail = document.createElement('p');
     userEmail.className = 'profile-email';
     userEmail.textContent = `Email: ${userData.email}`;
+
+    textContent.appendChild(userName);
+    textContent.appendChild(userEmail);
     
-    // Create the profile button with funtion wanted
+    // Create the profile button
     const profileButton = document.createElement('button');
-    profileButton.className = 'btn btn-primary';
+    profileButton.className = 'btn btn-primary profile-buttons';
 
     if (parseInt(currentUserId) === parseInt(userData.id)) {
-        // should be my profile, add button to update profile
         profileButton.id = 'btn-update-profile';
         profileButton.textContent = 'Update my profile';
     } else {
-        // should be others profile, add button to watch them
         profileButton.id = 'btn-watch-profile';
         profileButton.textContent = 'Watch this profile';
     }
 
-    // Create a div for the text content (name and email)
-    const textContent = document.createElement('div');
-    textContent.className = 'profile-text-content';
-    textContent.appendChild(userName);
-    textContent.appendChild(userEmail);
-    
-    // Add both the text content and button to the header
+    profileHeader.appendChild(avatarContainer);
     profileHeader.appendChild(textContent);
     profileHeader.appendChild(profileButton);
     
