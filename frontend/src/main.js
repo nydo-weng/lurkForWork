@@ -109,8 +109,9 @@ document.getElementById('btn-login').addEventListener('click', () => {
 
     if (!emailRegex.test(email)) {
         showErrorPopup('Error', "Please enter a valid email address.")
-    } else if (password.length < 6) {
-        showErrorPopup('Error', 'The password must be at least 6 characters.')
+    // } else if (password.length < 6) {
+    //     showErrorPopup('Error', 'The password must be at least 6 characters.')
+    // } else {
     } else {
         apiCall(
             'auth/login',
