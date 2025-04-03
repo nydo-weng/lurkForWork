@@ -938,7 +938,6 @@ const checkCommentsList = (job) => {
         modalContent.appendChild(commentBlock)
     }
     
-
     const modal = new bootstrap.Modal(document.getElementById('jobCommentsModal'))
     modal.show()
 }
