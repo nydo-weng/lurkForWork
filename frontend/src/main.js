@@ -134,6 +134,7 @@ const clearFeed = () => {
     });
 }
 
+// adding click event listener to buttons
 document.addEventListener('click', (e) => {
     if (e.target.classList.contains('btn-logout')) {
         clearFeed()
@@ -145,33 +146,16 @@ document.addEventListener('click', (e) => {
     // clciking "Profile" btn, go to my profile
     if (e.target.id === 'btn-my-profile') {
         clearFeed()
-        showPage('myprofile')
+        showPage('my-profile')
         // load my profile, so use 'my-profile-container' and current id
         const profileContainer = document.getElementById('my-profile-container');
         loadProfile(profileContainer, currentUserId)
     }
 
-    if (e.target.id === 'btn-back-home') {
+    if (e.target.classList.contains('btn-back-home')) {
         showPage('feed')
     }
 });
-
-// document.getElementById('btn-logout').addEventListener('click', () => {
-//     const feedContainer = document.getElementById('feed-container')
-//     const cards = feedContainer.querySelectorAll('.card')
-
-//     cards.forEach(card => {
-//         feedContainer.removeChild(card)
-//     });
-
-//     localStorage.removeItem('lurkforwork_token')
-//     localStorage.removeItem('lurkforwork_userId')
-//     showPage('login')
-// });
-
-// document.getElementById('btn-user-profile').addEventListener('click', () => {
-//     showPage('profile')
-// });
 
 const showPage = (pageName) => {
     const pages = document.querySelectorAll('.page')
@@ -607,6 +591,32 @@ const displayProfileData = (container, userData) => {
     // adding watchers
     for (const watcherId of userData.usersWhoWatchMeUserIds) {
         addWatcher(watcherId, watcherContainer)
+        addWatcher(watcherId, watcherContainer)
+        addWatcher(watcherId, watcherContainer)
+        addWatcher(watcherId, watcherContainer)
+        addWatcher(watcherId, watcherContainer)
+        addWatcher(watcherId, watcherContainer)
+        addWatcher(watcherId, watcherContainer)
+        addWatcher(watcherId, watcherContainer)
+        addWatcher(watcherId, watcherContainer)
+        addWatcher(watcherId, watcherContainer)
+        addWatcher(watcherId, watcherContainer)
+        addWatcher(watcherId, watcherContainer)
+        addWatcher(watcherId, watcherContainer)
+        addWatcher(watcherId, watcherContainer)
+        addWatcher(watcherId, watcherContainer)
+        addWatcher(watcherId, watcherContainer)
+        addWatcher(watcherId, watcherContainer)
+        addWatcher(watcherId, watcherContainer)
+        addWatcher(watcherId, watcherContainer)
+        addWatcher(watcherId, watcherContainer)
+        addWatcher(watcherId, watcherContainer)
+        addWatcher(watcherId, watcherContainer)
+        addWatcher(watcherId, watcherContainer)
+        addWatcher(watcherId, watcherContainer)
+        addWatcher(watcherId, watcherContainer)
+        addWatcher(watcherId, watcherContainer)
+        
     }
 }
 
@@ -627,6 +637,30 @@ const addWatcher = (watcherId, container) => {
         watcherNameSpan.textContent = '👀 ' + watcherName
         watcherNameSpan.classList.add('profile-watcher-name-span')
 
+        watcherBlock.addEventListener('click', () => {
+            showPage('others-profile')
+            // load others profile, so use 'others-profile-container' and current id
+            const profileContainer = document.getElementById('others-profile-container');
+            loadProfile(profileContainer, watcherId)
+        });
+
+        // add curosor interacting style
+        watcherBlock.style.cursor = 'pointer';
+        // smooth the annimation
+        watcherBlock.style.transition = 'transform 0.3s ease';
+
+        // curosor on, bigger
+        watcherBlock.addEventListener('mouseenter', () => {
+            watcherBlock.style.transform = 'scale(1.05)';
+            watcherBlock.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
+        });
+        
+        // cursor leave, back to normal
+        watcherBlock.addEventListener('mouseleave', () => {
+            watcherBlock.style.transform = 'scale(1)';
+            watcherBlock.style.boxShadow = 'none';
+        });
+        
         watcherBlock.appendChild(watcherNameSpan)
 
         container.appendChild(watcherBlock)

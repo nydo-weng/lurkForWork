@@ -13,7 +13,7 @@
     padding: 10px;
 }
 
-#top-bar {
+.top-bar {
     position: fixed;
     top: 0;
     left: 0;
@@ -28,25 +28,25 @@
     border: 1px solid #E7E7E7;
 }
 
-#top-bar>h1 {
+.top-bar>h1 {
     color: #0A66C2;
     font-size: clamp(24px, 8vw, 60px);
     margin: 0;
 }
 
-#top-bar .button-group {
+.top-bar .button-group {
     display: flex;
     gap: 10px;
 }
 
-#top-bar h1 .subtext {
+.top-bar h1 .subtext {
     font-size: clamp(12px, 4vw, 30px);
     margin-left: 10px;
     opacity: 0.8;
 }
 
 #page-feed,
-#page-myprofile {
+#page-my-profile {
     margin-top: 10vh;
 }
 
@@ -97,12 +97,12 @@
 }
 
 @media (max-width: 600px) {
-    #top-bar h1 {
+    .top-bar h1 {
         /* don't display h1 since there will be no space in one line*/
         font-size: 0;
     }
 
-    #top-bar h1 .subtext {
+    .top-bar h1 .subtext {
         /* only show subtext, but with h1's style */
         color: #0A66C2;
         font-size: clamp(24px, 8vw, 60px);
@@ -114,7 +114,7 @@
 .profile-card {
     width: 100%;
     max-width: 80vw;
-    margin: 11vh auto;
+    margin: 11vh auto 0;
     background: white;
     border: 1px solid #E7E7E7;
 }
