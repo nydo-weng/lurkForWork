@@ -193,8 +193,9 @@ const showPage = (pageName) => {
 }
 
 // for given job info, create a job card element, add to feed-container
-const createCard = (job) => {
-    const cardContainer = document.getElementById('feed-container')
+const createCard = (job, container) => {
+    // const cardContainer = document.getElementById('feed-container')
+    const cardContainer = container
 
     const card = document.createElement('div')
     card.classList.add('card', 'mb-3', 'count-job-card')
@@ -510,7 +511,8 @@ const loadFeed = (start = 0) => {
         }
         for (const job of data) {
             console.log(job)
-            createCard(job)
+            const container = document.getElementById('feed-container')
+            createCard(job, container)
         }
     }).catch((error) => {
         loadingIndicator.style.display = 'none';
@@ -572,24 +574,44 @@ const displayProfileData = (container, userData) => {
     
     const watcherNumber = document.createElement('span');
     watcherNumber.className = 'watcher-number';
-    watcherNumber.textContent = userData.usersWhoWatchMeUserIds.length;
-    console.log(`${userData.usersWhoWatchMeUserIds.length} watching this profile`)
+    watcherNumber.textContent = `Watched by ${userData.usersWhoWatchMeUserIds.length} users:`
     
-    const watchersLabel = document.createElement('span');
-    watchersLabel.className = 'stat-label';
-    watchersLabel.textContent = 'Users watching:';
+    // const watchersLabel = document.createElement('span');
+    // watchersLabel.className = 'watcher-label';
+    // watchersLabel.textContent = 'Users watching:';
+
+    const watcherContainer = document.createElement('div');
+    watcherContainer.className = 'profile-watcher-container';
+
+    watcherSection.appendChild(watcherNumber)
+    // watcherSection.appendChild(watchersLabel)
+    watcherSection.appendChild(watcherContainer)
     
     // use to display job and watcher side by side
     const contentContainer = document.createElement('div');
     contentContainer.className = 'profile-content';
     
-    contentContainer.appendChild(jobContainer);
     contentContainer.appendChild(watcherSection);
+    contentContainer.appendChild(jobContainer);
     
     profileCard.appendChild(profileHeader);
     profileCard.appendChild(contentContainer);
     
     container.appendChild(profileCard);
+
+    // adding job
+    for (const job of userData.jobs) {
+        createCard(job, jobContainer)
+    }
+
+    // adding watchers
+    for (const watcherId of userData.usersWhoWatchMeUserIds) {
+        addWatcher(watcherId, watcherContainer)
+    }
+}
+
+const addWatcher = (watcherId, container) => {
+    console.log(watcherId)
 }
 
 // everytime call this function, it will take a func, and execute it at delay
