@@ -24,6 +24,8 @@ function showErrorPopup(errorLabel, errorMessage) {
 let token = localStorage.getItem('lurkforwork_token')
 let currentUserId = localStorage.getItem('lurkforwork_userId')
 
+let currentPage = 'feed'
+
 // use for load feed, 2.3.4
 let isLoading = false   // to control the flow, if is loading next 5 jobs, do nothing just return
 let hasMoreJobs = true  // if there is no more jobs on server, do nothing just return
@@ -85,7 +87,7 @@ document.getElementById('btn-register').addEventListener('click', () => {
             localStorage.setItem('lurkforwork_userId', data.userId)
             token = localStorage.getItem('lurkforwork_token')
             currentUserId = localStorage.getItem('lurkforwork_userId')
-            showPage('feed')
+            currentPage = showPage('feed')
         }).catch((error) => {
             showErrorPopup('Error', error.message)
         });
@@ -117,7 +119,7 @@ document.getElementById('btn-login').addEventListener('click', () => {
             localStorage.setItem('lurkforwork_userId', data.userId)
             token = localStorage.getItem('lurkforwork_token')
             currentUserId = localStorage.getItem('lurkforwork_userId')
-            showPage('feed')
+            currentPage = showPage('feed')
         }).catch((error) => {
             showErrorPopup('Error', error.message)
         });
@@ -140,13 +142,13 @@ document.addEventListener('click', (e) => {
         clearFeed()
         localStorage.removeItem('lurkforwork_token');
         localStorage.removeItem('lurkforwork_userId');
-        showPage('login');
+        currentPage = showPage('login');
     }
 
     // clciking "Profile" btn, go to my profile
     if (e.target.id === 'btn-my-profile') {
         clearFeed()
-        showPage('my-profile')
+        currentPage = showPage('my-profile')
         // load my profile, so use 'my-profile-container' and current id
         const profileContainer = document.getElementById('my-profile-container');
         loadProfile(profileContainer, currentUserId)
@@ -154,9 +156,57 @@ document.addEventListener('click', (e) => {
 
     if (e.target.classList.contains('btn-back-home')) {
         clearFeed()
-        showPage('feed')
+        currentPage = showPage('feed')
+    }
+
+    if (e.target.classList.contains('btn-search-user')) {
+        showSearchUserModal()
     }
 });
+
+
+// pop up a modal for search user usage
+const showSearchUserModal = () => {
+    const modal = new bootstrap.Modal(document.getElementById('searchUserModal'))
+    modal.show();
+
+    const watchSearchedUserButton = document.getElementById('btn-watch-searched-user')
+    const newWatchSearchedUserButton = watchSearchedUserButton.cloneNode(true);
+    // use the clone replace with the original one, which will remove all eventListener
+    watchSearchedUserButton.replaceWith(newWatchSearchedUserButton);
+
+    newWatchSearchedUserButton.addEventListener('click', () => {
+        watchSearchedUser();
+    });
+}
+
+const watchSearchedUser = () => {
+    console.log("watch searched user")
+    const email = document.getElementById('search-user-email').value
+
+    apiCall(
+        'user/watch',
+        'PUT',
+        {
+            email: email,
+            turnon: true
+        }
+    ).then(() => {
+        // reach here if backend ok with this watch
+        alert(`You are watching ${userData.name} now!`)
+       
+        // reload the other profile page
+        clearFeed()
+        currentPage = showPage('others-profile')
+        // load other profile, so use 'other-profile-container' and other's id
+        const profileContainer = document.getElementById('others-profile-container');
+        loadProfile(profileContainer, userData.id)
+    }).catch((error) => {
+        console.log(error)
+        showErrorPopup('Error', error.message)
+    });
+
+}
 
 const showPage = (pageName) => {
     // remove jobs from profile while page change
@@ -186,6 +236,7 @@ const showPage = (pageName) => {
     } else {
         window.removeEventListener('scroll', debounce(checkScroll, 200));
     }
+    return pageName
 }
 
 // for given job info, create a job card element, add to feed-container
@@ -236,13 +287,13 @@ const createCard = (job, container) => {
             // if go to the user profile with same id with currentuserid, go my profile
             if (parseInt(cardAuthorId) === parseInt(currentUserId)) {
                 // show my profile
-                showPage('my-profile')
+                currentPage = showPage('my-profile')
                 // load my profile, so use 'others-profile-container' and currentUserId
                 const profileContainer = document.getElementById('my-profile-container');
                 loadProfile(profileContainer, currentUserId)
             } else {
                 // show others profile
-                showPage('others-profile')
+                currentPage = showPage('others-profile')
                 // load others profile, so use 'others-profile-container' and cardAuthorId
                 const profileContainer = document.getElementById('others-profile-container');
                 loadProfile(profileContainer, cardAuthorId)
@@ -479,13 +530,13 @@ const checkLikesList = (job) => {
                 // if go to the user profile with same id with currentuserid, go my profile
                 if (parseInt(likedUserId) === parseInt(currentUserId)) {
                     // show my profile
-                    showPage('my-profile')
+                    currentPage = showPage('my-profile')
                     // load my profile, so use 'others-profile-container' and currentUserId
                     const profileContainer = document.getElementById('my-profile-container');
                     loadProfile(profileContainer, currentUserId)
                 } else {
                     // show others profile
-                    showPage('others-profile')
+                    currentPage = showPage('others-profile')
                     // load others profile, so use 'others-profile-container' and likedUserId
                     const profileContainer = document.getElementById('others-profile-container');
                     loadProfile(profileContainer, likedUserId)
@@ -563,13 +614,13 @@ const checkCommentsList = (job) => {
                 // if go to the user profile with same id with currentuserid, go my profile
                 if (parseInt(commentUserId) === parseInt(currentUserId)) {
                     // show my profile
-                    showPage('my-profile')
+                    currentPage = showPage('my-profile')
                     // load my profile, so use 'others-profile-container' and currentUserId
                     const profileContainer = document.getElementById('my-profile-container');
                     loadProfile(profileContainer, currentUserId)
                 } else {
                     // show others profile
-                    showPage('others-profile')
+                    currentPage = showPage('others-profile')
                     // load others profile, so use 'others-profile-container' and commentUserId
                     const profileContainer = document.getElementById('others-profile-container');
                     loadProfile(profileContainer, commentUserId)
@@ -828,14 +879,14 @@ const watchByEmail = (userData, watchFlag) => {
     ).then(() => {
         // reach here if backend ok with this watch
         if (watchFlag) {
-            alert(`You are watching ${userData.name}`)
+            alert(`You are watching ${userData.name} now!`)
         } else {
-            alert(`You are unwatched ${userData.name}`)
+            alert(`You are unwatched ${userData.name} now!`)
         }
 
         // reload the other profile page
         clearFeed()
-        showPage('others-profile')
+        currentPage = showPage('others-profile')
         // load other profile, so use 'other-profile-container' and other's id
         const profileContainer = document.getElementById('others-profile-container');
         loadProfile(profileContainer, userData.id)
@@ -913,7 +964,7 @@ const sendUpdateRequest = (requestBody) => {
         document.getElementById('update-image').value = ''
         // reload the my profile page
         clearFeed()
-        showPage('my-profile')
+        currentPage = showPage('my-profile')
         // load my profile, so use 'my-profile-container' and current id
         const profileContainer = document.getElementById('my-profile-container');
         loadProfile(profileContainer, currentUserId)
@@ -950,13 +1001,13 @@ const addWatcher = (watcherId, container) => {
             // if go to the user profile with same id with currentuserid, go my profile
             if (parseInt(watcherId) === parseInt(currentUserId)) {
                 // show my profile
-                showPage('my-profile')
+                currentPage = showPage('my-profile')
                 // load my profile, so use 'others-profile-container' and currentUserId
                 const profileContainer = document.getElementById('my-profile-container');
                 loadProfile(profileContainer, currentUserId)
             } else {
                 // show others profile
-                showPage('others-profile')
+                currentPage = showPage('others-profile')
                 // load others profile, so use 'others-profile-container' and watcherId
                 const profileContainer = document.getElementById('others-profile-container');
                 loadProfile(profileContainer, watcherId)
@@ -1018,13 +1069,13 @@ for (const atag of document.querySelectorAll('a')) {
     if (atag.hasAttribute('internal-link')) {
         atag.addEventListener('click', () => {
             const pageName = atag.getAttribute('internal-link')
-            showPage(pageName)
+            currentPage = showPage(pageName)
         });
     }
 }
 
 if (token) {
-    showPage('feed')
+    currentPage = showPage('feed')
 } else {
-    showPage('login')
+    currentPage = showPage('login')
 }
