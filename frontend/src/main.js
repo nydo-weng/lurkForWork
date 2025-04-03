@@ -547,6 +547,10 @@ const createCard = (job, container) => {
         leaveCommentButton.style.marginLeft = "30px"
         cardBody.appendChild(leaveCommentButton)
 
+        leaveCommentButton.addEventListener('click', () => {
+            showLeaveCommentModal(job)
+        })
+
         // delete & updating 
         // job belong current user, show update and delet button
         if (parseInt(job.creatorId) === parseInt(currentUserId)) {
@@ -570,7 +574,6 @@ const createCard = (job, container) => {
             deleteJobButton.style.marginTop = "20px"
             deleteJobButton.style.marginLeft = "80px"
 
-
             updateJobButton.addEventListener('click', () => {
                 showUpdateJobModal(job)
             });
@@ -583,6 +586,21 @@ const createCard = (job, container) => {
         cardContainer.appendChild(card)
     }).catch((error) => {
         showErrorPopup('Error', error.message)
+    });
+}
+
+// show leave comment modal
+const showLeaveCommentModal = (job) => {
+    const modal = new bootstrap.Modal(document.getElementById('leaveCommentsModal'))
+    modal.show();
+
+    const confirmCommentButton = document.getElementById('btn-update-job')
+    const newConfirmCommentButton = confirmCommentButton.cloneNode(true);
+    // use the clone replace with the original one, which will remove all eventListener
+    confirmCommentButton.replaceWith(newConfirmCommentButton);
+
+    newConfirmCommentButton.addEventListener('click', () => {
+        sendCommentsRequest(job);
     });
 }
 
