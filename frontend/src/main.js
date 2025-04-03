@@ -38,6 +38,8 @@ let currentProfileId = 11111
 let isLoading = false   // to control the flow, if is loading next 5 jobs, do nothing just return
 let hasMoreJobs = true  // if there is no more jobs on server, do nothing just return
 
+let debouncedScrollHandler  // used for infinite scroll
+
 function apiCall(path, method, data) {
     return new Promise((resolve, reject) => {
         fetch(`http://localhost:5005/${path}`, {
@@ -192,7 +194,6 @@ const showAddJobModal = () => {
 }
 
 const addJob = () => {
-    console.log("adding job")
     const title = document.getElementById('add-job-title').value
 
     const dateInput = document.getElementById('add-job-date').value
@@ -225,7 +226,6 @@ const addJob = () => {
 }
 
 const sendAddJobRequest = (requestBody) => {
-    console.log("sending update request to server")
     apiCall(
         'job',
         'POST',
@@ -246,6 +246,7 @@ const sendAddJobRequest = (requestBody) => {
         )
         modal.hide()
         // reload page
+        reloadPage()
     }).catch((error) => {
         // remain modal open if faild
         showErrorPopup('Error', error.message)
@@ -299,6 +300,10 @@ const watchSearchedUser = () => {
 }
 
 const showPage = (pageName) => {
+    if (!debouncedScrollHandler) {
+        debouncedScrollHandler = debounce(checkScroll, 200)
+    }
+
     // remove jobs from profile while page change
     const jobContainers = document.getElementsByClassName('profile-job-container')
 
@@ -322,9 +327,14 @@ const showPage = (pageName) => {
         const noMoreElement = document.getElementById('feed-no-more');
         noMoreElement.style.display = 'none';
         loadFeed(0)
-        window.addEventListener('scroll', debounce(checkScroll, 200));
+
+        window.removeEventListener('scroll', debouncedScrollHandler);
+        window.addEventListener('scroll', debouncedScrollHandler);
+        // window.removeEventListener('scroll', debounce(checkScroll, 200));
+        // window.addEventListener('scroll', debounce(checkScroll, 200));
     } else {
-        window.removeEventListener('scroll', debounce(checkScroll, 200));
+        window.removeEventListener('scroll', debouncedScrollHandler);
+        // window.removeEventListener('scroll', debounce(checkScroll, 200));
     }
     return pageName
 }
@@ -555,7 +565,7 @@ const createCard = (job, container) => {
 
 
             updateJobButton.addEventListener('click', () => {
-                updateJob(job)
+                showUpdateJobModal(job)
             });
 
             deleteJobButton.addEventListener('click', () => {
@@ -569,6 +579,7 @@ const createCard = (job, container) => {
     });
 }
 
+// delete the given job
 const deleteJob = (job) => {
     apiCall(
         'job',
@@ -585,6 +596,23 @@ const deleteJob = (job) => {
         showErrorPopup('Error', error.message)
     });
 }
+
+const showUpdateJobModal = (job) => {
+    const modal = new bootstrap.Modal(document.getElementById('updateJobModal'))
+    modal.show();
+
+    const confirmUpdateJobButton = document.getElementById('btn-update-job')
+    const newConfirmUpdateJobButton = confirmUpdateJobButton.cloneNode(true);
+    // use the clone replace with the original one, which will remove all eventListener
+    confirmUpdateJobButton.replaceWith(newConfirmUpdateJobButton);
+
+    newConfirmUpdateJobButton.addEventListener('click', () => {
+        updateJob(job);
+    });
+}
+
+
+
 
 const reloadPage = () => {
     clearFeed()
