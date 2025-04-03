@@ -405,6 +405,8 @@ const checkLikesList = (job) => {
         // adding like for current job
         for (const like of job.likes) {
             const likedUserName = like.userName
+            // used to go user profile
+            const likedUserId = like.userId
 
             const likeBlock = document.createElement('div')
             likeBlock.classList.add('job-modal-block')
@@ -416,6 +418,38 @@ const checkLikesList = (job) => {
             userNameSpan.textContent = likedUserName;
             userNameSpan.classList.add('username-modal-style');
             const likedText = document.createTextNode(' liked this job ❤️');
+
+            // add listener to userNameSpan
+            userNameSpan.addEventListener('click', () => {
+                // close jobLikesModal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('jobLikesModal'));
+                modal.hide();
+                // show others profile
+                showPage('others-profile')
+                // load others profile, so use 'others-profile-container' and likedUserId
+                const profileContainer = document.getElementById('others-profile-container');
+                loadProfile(profileContainer, likedUserId)
+            });
+
+            // add curosor interacting style
+            userNameSpan.style.cursor = 'pointer'
+            userNameSpan.style.display = 'inline-block'
+            // smooth the annimation
+            userNameSpan.style.transition = 'transform 0.3s ease'
+
+            // curosor on, bigger, change color
+            userNameSpan.addEventListener('mouseenter', () => {
+                userNameSpan.style.transform = 'scale(1.15)'
+                userNameSpan.style.color = '#004182'
+                userNameSpan.style.fontWeight = 'bold'
+            });
+
+            // cursor leave, back to normal, default color
+            userNameSpan.addEventListener('mouseleave', () => {
+                userNameSpan.style.transform = 'scale(1)'
+                userNameSpan.style.color = ''
+                userNameSpan.style.fontWeight = ''
+            });
 
             userNameElement.appendChild(userNameSpan);
             userNameElement.appendChild(likedText);
@@ -637,6 +671,7 @@ const addWatcher = (watcherId, container) => {
         watcherNameSpan.textContent = '👀 ' + watcherName
         watcherNameSpan.classList.add('profile-watcher-name-span')
 
+        // add listener so that can go to watchers profile
         watcherBlock.addEventListener('click', () => {
             showPage('others-profile')
             // load others profile, so use 'others-profile-container' and current id
