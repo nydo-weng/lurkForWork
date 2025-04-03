@@ -193,16 +193,21 @@ const watchSearchedUser = () => {
         }
     ).then(() => {
         // reach here if backend ok with this watch
-        alert(`You are watching ${userData.name} now!`)
-       
-        // reload the other profile page
-        clearFeed()
-        currentPage = showPage('others-profile')
-        // load other profile, so use 'other-profile-container' and other's id
-        const profileContainer = document.getElementById('others-profile-container');
-        loadProfile(profileContainer, userData.id)
+        alert(`You are watching ${email} now!`)
+        // reload page, up to which current page is
+        // do the reload later, 2.6.2
+
+        // close the modal
+        const modal = bootstrap.Modal.getInstance(
+            document.getElementById('searchUserModal')
+        )
+        modal.hide()
     }).catch((error) => {
         console.log(error)
+        const modal = bootstrap.Modal.getInstance(
+            document.getElementById('searchUserModal')
+        )
+        modal.hide()
         showErrorPopup('Error', error.message)
     });
 
