@@ -714,11 +714,14 @@ const displayProfileData = (container, userData) => {
         profileButton.id = 'btn-update-profile';
         profileButton.textContent = 'Update my profile';
         profileButton.addEventListener('click', () => {
-            showUpdateProfileModal(userData)
+            showUpdateProfileModal()
         })
     } else {
         profileButton.id = 'btn-watch-profile';
         profileButton.textContent = 'Watch this profile';
+        profileButton.addEventListener('click', () => {
+            watchOtherUser(userData)
+        })
     }
 
     profileHeader.appendChild(avatarContainer);
@@ -791,7 +794,51 @@ const displayProfileData = (container, userData) => {
     }
 }
 
-const showUpdateProfileModal = (userData) => {
+// watching / watching a user with given user id
+const watchOtherUser = (userData) => {
+    if (userData.usersWhoWatchMeUserIds.length === 0) {
+        // no one waching, not watch yet, watching this user
+        watchByEmail(userData)
+    } else {
+        for (const userId of userData.usersWhoWatchMeUserIds) {
+            console.log(userId)
+            if (parseInt(currentUserId) === parseInt(userId)) {
+                // already watching this user, unwatch this
+                console.log("already watched, unwatching")
+            } else {
+                // not watch yet, watching this user
+                watchByEmail(userData)
+            }
+        }
+    }
+}
+
+const watchByEmail = (userData) => {
+    console.log(userData.email)
+    apiCall(
+        'user/watch',
+        'PUT',
+        {
+            email: userData.email,
+            turnon: true
+        }
+    ).then(() => {
+        // reach here if backend ok with this watch
+        alert(`You are watching ${userData.name}`)
+        
+        // reload the other profile page
+        clearFeed()
+        showPage('other-profile')
+        // load other profile, so use 'other-profile-container' and other's id
+        const profileContainer = document.getElementById('othes-profile-container');
+        loadProfile(profileContainer, userData.id)
+    }).catch((error) => {
+        showErrorPopup('Error', error.message)
+    });
+}
+
+// pop up a modal for update profile usage
+const showUpdateProfileModal = () => {
     const modal = new bootstrap.Modal(document.getElementById('updateProfileModal'))
     modal.show();
 
@@ -801,11 +848,11 @@ const showUpdateProfileModal = (userData) => {
     confirmUpdateProfileButton.replaceWith(newConfirmUpdateProfileButton);
 
     newConfirmUpdateProfileButton.addEventListener('click', () => {
-        updateUserProfile(userData.id);
+        updateUserProfile();
     });
 }
 
-const updateUserProfile = (userId) => {
+const updateUserProfile = () => {
     const email = document.getElementById('update-email').value
     const password = document.getElementById('update-password').value
     const name = document.getElementById('update-name').value
@@ -848,7 +895,7 @@ const sendUpdateRequest = (requestBody) => {
         'user',
         'PUT',
         requestBody
-    ).then((data) => {
+    ).then(() => {
         // reach here if backend ok with this profile update
         alert('Profile update successful!')
         // empty the form
