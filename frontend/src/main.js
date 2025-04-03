@@ -5,7 +5,7 @@ import { fileToDataUrl } from './helpers.js';
 console.log('Let\'s go!');
 
 // Function to show error popup with a custom message
-function showErrorPopup(errorLabel, errorMessage) {
+function showErrorPopup(errorLabel, errorMessage, color='red') {
     // // Get the modal and the element where the error message will be displayed
     // const modal = new bootstrap.Modal(document.getElementById('errorPopup'))
 
@@ -21,7 +21,7 @@ function showErrorPopup(errorLabel, errorMessage) {
     const modalMessage = document.getElementById('errorPopupMessage')
 
     modalLabel.textContent = errorLabel
-    modalLabel.style.color = 'red'
+    modalLabel.style.color = color
     // Set the message inside the modal
     modalMessage.textContent = errorMessage
     // Show the modal
@@ -187,6 +187,63 @@ const showAddJobModal = () => {
 
     newAddJobButtonButton.addEventListener('click', () => {
         addJob()
+    });
+}
+
+const addJob = () => {
+    console.log("adding job")
+    const title = document.getElementById('add-job-title').value
+
+    const yyyyMmDd = document.getElementById('add-job-date').value
+    const [year, month, day] = yyyyMmDd.split('-');
+    const date = `${day}/${month}/${year}`;
+
+    const description = document.getElementById('add-job-description').value
+    const imageFile = document.getElementById('add-job-image').files[0]
+    
+    const requestBody = {
+        title: title,
+        start: date,
+        description: description
+    }
+    
+    if (!imageFile) {
+        sendAddJobRequest(requestBody)
+    } else {
+        fileToDataUrl(imageFile).then((dataUrl) => {
+            requestBody.image = dataUrl
+            sendAddJobRequest(requestBody)
+        }).catch((error) => {
+            console.log(error)
+            showErrorPopup('Error', error.message)
+        });
+    }
+}
+
+const sendAddJobRequest = (requestBody) => {
+    console.log("sending update request to server")
+    apiCall(
+        'job',
+        'POST',
+        requestBody
+    ).then(() => {
+        // reach here if backend ok with this profile update
+        showErrorPopup('Job Added', "Job added successfully", 'blue')
+
+        // empty the form
+        document.getElementById('add-job-title').value = ''
+        document.getElementById('add-job-date').value = ''
+        document.getElementById('add-job-description').value = ''
+        document.getElementById('add-job-image').value = ''
+
+        // close the addJobModal after added
+        const modal = bootstrap.Modal.getInstance(
+            document.getElementById('addJobModal')
+        )
+        modal.hide()
+    }).catch((error) => {
+        // remain modal open if faild
+        showErrorPopup('Error', error.message)
     });
 }
 
