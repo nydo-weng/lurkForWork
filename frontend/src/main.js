@@ -24,6 +24,10 @@ function showErrorPopup(errorLabel, errorMessage) {
 let token = localStorage.getItem('lurkforwork_token')
 let currentUserId = localStorage.getItem('lurkforwork_userId')
 
+// use for load feed, 2.3.4
+let isLoading = false   // to control the flow, if is loading next 5 jobs, do nothing just return
+let hasMoreJobs = true  // if there is no more jobs on server, do nothing just return
+
 function apiCall(path, method, data) {
     return new Promise((resolve, reject) => {
         fetch(`http://localhost:5005/${path}`, {
@@ -144,11 +148,12 @@ const showPage = (pageName) => {
     }
 }
 
+// for given job info, create a job card element, add to feed-container
 const createCard = (job) => {
     const cardContainer = document.getElementById('feed-container')
 
     const card = document.createElement('div')
-    card.classList.add('card', 'mb-3')
+    card.classList.add('card', 'mb-3', 'count-job-card')
     card.style.width = '100%'
 
     const cardBody = document.createElement('div')
@@ -268,7 +273,7 @@ const createCard = (job) => {
         // 2.3.3 like a job
         const likeJobButton = document.createElement('button')
         likeJobButton.classList.add('btn', 'btn-link', 'p-0')
-        
+
         const likedJobAlready = () => {     // check if current user already liked the job
             for (const like of job.likes) {
                 if (parseInt(like.userId) === parseInt(currentUserId)) {
@@ -350,7 +355,7 @@ const likeJob = (jobId, likeJobButton) => {
         const newlikeJobButton = likeJobButton.cloneNode(true);
         // use the clone replace with the original one, which will remove all eventListener
         likeJobButton.replaceWith(newlikeJobButton);
-        
+
         const handleUnlikeClick = () => unlikeJob(jobId, newlikeJobButton);
         newlikeJobButton.textContent = `Unlike the job 💔`
         newlikeJobButton.addEventListener('click', handleUnlikeClick)
@@ -435,21 +440,52 @@ const checkCommentsList = (job) => {
     // console.log(`calling checkCommentsList for job ${job.id}`)
 }
 
-const loadFeed = () => {
+const loadFeed = (start = 0) => {
+    if (isLoading || !hasMoreJobs) { return }
+
+    isLoading = true    // avoid this function called multiple time at same time
+    // show loading message
+    const loadingIndicator = document.getElementById('feed-loading');
+    loadingIndicator.style.display = 'block';
+
     apiCall(
-        'job/feed?start=0',
+        `job/feed?start=${start}`,
         'GET',
         {}
     ).then((data) => {
+        // loading from server finished, hide the loading message
+        loadingIndicator.style.display = 'none';
+        isLoading = false;  // allow this function to do next loading
+        // there is no more job on server
+        if (data.length === 0) {
+            hasMoreJobs = false
+            // show no job message at bottom of the page
+            const noMoreElement = document.getElementById('feed-no-more');
+            noMoreElement.style.display = 'block';
+            return
+        }
         for (const job of data) {
             console.log(job)
             createCard(job)
         }
-        // console.log(data)
     }).catch((error) => {
+        loadingIndicator.style.display = 'none';
+        isLoading = false;
         showErrorPopup('Error', error.message)
     });
 }
+
+const checkScroll = () => {
+    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+    // do this while the window scroll to bottom within 100px
+    if (scrollTop + clientHeight > scrollHeight - 100) {
+        const loadedCount = document.querySelectorAll('.count-job-card').length;
+        console.log(loadedCount)
+        loadFeed(loadedCount);
+    }
+}
+
+window.addEventListener('scroll', checkScroll)
 
 // Do it when the page loads
 for (const atag of document.querySelectorAll('a')) {
