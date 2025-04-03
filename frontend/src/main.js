@@ -32,6 +32,7 @@ let token = localStorage.getItem('lurkforwork_token')
 let currentUserId = localStorage.getItem('lurkforwork_userId')
 
 let currentPage = 'feed'
+let currentProfileId = 11111
 
 // use for load feed, 2.3.4
 let isLoading = false   // to control the flow, if is loading next 5 jobs, do nothing just return
@@ -158,7 +159,7 @@ document.addEventListener('click', (e) => {
         currentPage = showPage('my-profile')
         // load my profile, so use 'my-profile-container' and current id
         const profileContainer = document.getElementById('my-profile-container');
-        loadProfile(profileContainer, currentUserId)
+        currentProfileId = loadProfile(profileContainer, currentUserId)
     }
 
     if (e.target.classList.contains('btn-back-home')) {
@@ -280,8 +281,7 @@ const watchSearchedUser = () => {
         // reach here if backend ok with this watch
         alert(`You are watching ${email} now!`)
         // reload page, up to which current page is
-        // do the reload later, 2.6.2
-
+        reloadPage()
         // close the modal
         const modal = bootstrap.Modal.getInstance(
             document.getElementById('searchUserModal')
@@ -300,7 +300,8 @@ const watchSearchedUser = () => {
 
 const showPage = (pageName) => {
     // remove jobs from profile while page change
-    const jobContainers = document.getElementsByClassName('profile-job-container')
+    // const jobContainers = document.getElementsByClassName('profile-job-container')
+    const jobContainers = document.getElementsByClassName('feed-container')
 
     for (const jobContainer of jobContainers) {
         const cards = jobContainer.querySelectorAll('.card')
@@ -380,13 +381,13 @@ const createCard = (job, container) => {
                 currentPage = showPage('my-profile')
                 // load my profile, so use 'others-profile-container' and currentUserId
                 const profileContainer = document.getElementById('my-profile-container');
-                loadProfile(profileContainer, currentUserId)
+                currentProfileId = loadProfile(profileContainer, currentUserId)
             } else {
                 // show others profile
                 currentPage = showPage('others-profile')
                 // load others profile, so use 'others-profile-container' and cardAuthorId
                 const profileContainer = document.getElementById('others-profile-container');
-                loadProfile(profileContainer, cardAuthorId)
+                currentProfileId = loadProfile(profileContainer, cardAuthorId)
             }
         });
 
@@ -569,6 +570,45 @@ const createCard = (job, container) => {
     });
 }
 
+const deleteJob = (job) => {
+    apiCall(
+        'job',
+        'DELETE',
+        {
+            id: job.id
+        }
+    ).then((data) => {
+        showErrorPopup('Job Deleted', "Job deleted successfully", 'blue')
+        console.log(currentPage)
+        // reload page
+        reloadPage()
+    }).catch((error) => {
+        showErrorPopup('Error', error.message)
+    });
+}
+
+const reloadPage = () => {
+    clearFeed()
+    if (currentPage === 'feed') {   // reload feed
+        clearFeed()
+        currentPage = showPage('feed')
+    } else if (currentPage === 'my-profile') {  // reload my-profile
+        console.log("my profile now")
+        // show my profile
+        currentPage = showPage('my-profile')
+        // load my profile, so use 'others-profile-container' and currentUserId
+        const profileContainer = document.getElementById('my-profile-container');
+        currentProfileId = loadProfile(profileContainer, currentUserId)
+    } else if (currentPage === 'others-profile') {  // reload others-profile
+        console.log("others profile now")
+        // show others profile
+        currentPage = showPage('others-profile')
+        // load others profile, so use 'others-profile-container' and 
+        const profileContainer = document.getElementById('others-profile-container');
+        currentProfileId = loadProfile(profileContainer, currentProfileId)
+    }        
+}
+
 
 
 const unlikeJob = (jobId, likeJobButton) => {
@@ -655,13 +695,13 @@ const checkLikesList = (job) => {
                     currentPage = showPage('my-profile')
                     // load my profile, so use 'others-profile-container' and currentUserId
                     const profileContainer = document.getElementById('my-profile-container');
-                    loadProfile(profileContainer, currentUserId)
+                    currentProfileId = loadProfile(profileContainer, currentUserId)
                 } else {
                     // show others profile
                     currentPage = showPage('others-profile')
                     // load others profile, so use 'others-profile-container' and likedUserId
                     const profileContainer = document.getElementById('others-profile-container');
-                    loadProfile(profileContainer, likedUserId)
+                    currentProfileId = loadProfile(profileContainer, likedUserId)
                 }
             });
 
@@ -739,13 +779,13 @@ const checkCommentsList = (job) => {
                     currentPage = showPage('my-profile')
                     // load my profile, so use 'others-profile-container' and currentUserId
                     const profileContainer = document.getElementById('my-profile-container');
-                    loadProfile(profileContainer, currentUserId)
+                    currentProfileId = loadProfile(profileContainer, currentUserId)
                 } else {
                     // show others profile
                     currentPage = showPage('others-profile')
                     // load others profile, so use 'others-profile-container' and commentUserId
                     const profileContainer = document.getElementById('others-profile-container');
-                    loadProfile(profileContainer, commentUserId)
+                    currentProfileId = loadProfile(profileContainer, commentUserId)
                 }
 
             });
@@ -831,6 +871,7 @@ const loadProfile = (container, userId) => {
     }).catch((error) => {
         showErrorPopup('Error', error.message)
     });
+    return userId
 }
 
 const displayProfileData = (container, userData) => {
@@ -986,7 +1027,7 @@ const watchByEmail = (userData, watchFlag) => {
         currentPage = showPage('others-profile')
         // load other profile, so use 'other-profile-container' and other's id
         const profileContainer = document.getElementById('others-profile-container');
-        loadProfile(profileContainer, userData.id)
+        currentProfileId = loadProfile(profileContainer, userData.id)
     }).catch((error) => {
         console.log(error)
         showErrorPopup('Error', error.message)
@@ -1064,7 +1105,7 @@ const sendUpdateRequest = (requestBody) => {
         currentPage = showPage('my-profile')
         // load my profile, so use 'my-profile-container' and current id
         const profileContainer = document.getElementById('my-profile-container');
-        loadProfile(profileContainer, currentUserId)
+        currentProfileId = loadProfile(profileContainer, currentUserId)
 
         // close the updateprofilemodal
         const modal = bootstrap.Modal.getInstance(
@@ -1101,13 +1142,13 @@ const addWatcher = (watcherId, container) => {
                 currentPage = showPage('my-profile')
                 // load my profile, so use 'others-profile-container' and currentUserId
                 const profileContainer = document.getElementById('my-profile-container');
-                loadProfile(profileContainer, currentUserId)
+                currentProfileId = loadProfile(profileContainer, currentUserId)
             } else {
                 // show others profile
                 currentPage = showPage('others-profile')
                 // load others profile, so use 'others-profile-container' and watcherId
                 const profileContainer = document.getElementById('others-profile-container');
-                loadProfile(profileContainer, watcherId)
+                currentProfileId = loadProfile(profileContainer, watcherId)
             }
         });
 
