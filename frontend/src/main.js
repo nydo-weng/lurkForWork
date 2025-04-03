@@ -200,9 +200,6 @@ const addJob = () => {
     const dateObj = new Date(dateInput)
     // convert to the format server required
     const date = dateObj.toISOString();
-
-    console.log(date)
-
     const description = document.getElementById('add-job-description').value
     const imageFile = document.getElementById('add-job-image').files[0]
 
@@ -330,18 +327,14 @@ const showPage = (pageName) => {
 
         window.removeEventListener('scroll', debouncedScrollHandler);
         window.addEventListener('scroll', debouncedScrollHandler);
-        // window.removeEventListener('scroll', debounce(checkScroll, 200));
-        // window.addEventListener('scroll', debounce(checkScroll, 200));
     } else {
         window.removeEventListener('scroll', debouncedScrollHandler);
-        // window.removeEventListener('scroll', debounce(checkScroll, 200));
     }
     return pageName
 }
 
 // for given job info, create a job card element, add to feed-container
 const createCard = (job, container) => {
-    // const cardContainer = document.getElementById('feed-container')
     const cardContainer = container
 
     const card = document.createElement('div')
@@ -491,15 +484,8 @@ const createCard = (job, container) => {
         cardLikesButton.textContent = `💖 ${job.likes.length || 'none'} likes`
         cardLikesButton.addEventListener('click', () => {
             checkLikesList(job)
-            console.log(`this job is ${job.id}`)
         });
         cardBody.appendChild(cardLikesButton)
-
-        // // add space between likes and like a job
-        // const spaceSpan = document.createElement('span')
-        // spaceSpan.style.display = 'inline-block'
-        // spaceSpan.style.width = 'clamp(5px, 5vw, 25px)'
-        // cardBody.appendChild(spaceSpan)
 
         // 2.3.3 like a job
         const likeJobButton = document.createElement('button')
@@ -536,7 +522,6 @@ const createCard = (job, container) => {
         cardCommentsButton.textContent = `💬 ${job.comments.length || 'no'} comments`
         cardCommentsButton.addEventListener('click', () => {
             checkCommentsList(job)
-            console.log(`this job is ${job.id}`)
         });
         cardBody.appendChild(cardCommentsButton)
 
@@ -563,7 +548,6 @@ const createCard = (job, container) => {
             updateJobButton.textContent = `Update Job`
             cardBody.appendChild(updateJobButton)
             updateJobButton.style.marginTop = "20px"
-
 
             const deleteJobButton = document.createElement('button')
             // make the button red
@@ -593,7 +577,6 @@ const createCard = (job, container) => {
 const showLeaveCommentModal = (job) => {
     const modal = new bootstrap.Modal(document.getElementById('leaveCommentsModal'))
     modal.show();
-    console.log("leaving comments")
 
     const confirmCommentButton = document.getElementById('btn-comment')
     const newConfirmCommentButton = confirmCommentButton.cloneNode(true);
@@ -606,7 +589,6 @@ const showLeaveCommentModal = (job) => {
 }
 
 const leaveComments = (job) => {
-    console.log("leaving comments")
     const text = document.getElementById('comments-text').value
 
     const requestBody = {
@@ -617,7 +599,6 @@ const leaveComments = (job) => {
 }
 
 const sendLeaveCommentsRequest = (requestBody) => {
-    console.log("sending update job request to server")
     apiCall(
         'job/comment',
         'POST',
@@ -652,7 +633,6 @@ const deleteJob = (job) => {
         }
     ).then((data) => {
         showErrorPopup('Job Deleted', "Job deleted successfully", 'blue')
-        console.log(currentPage)
         // reload page
         reloadPage()
     }).catch((error) => {
@@ -711,7 +691,6 @@ const updateJob = (job) => {
 }
 
 const sendUpdateJobRequest = (requestBody) => {
-    console.log("sending update job request to server")
     apiCall(
         'job',
         'PUT',
@@ -746,14 +725,12 @@ const reloadPage = () => {
         clearFeed()
         currentPage = showPage('feed')
     } else if (currentPage === 'my-profile') {  // reload my-profile
-        console.log("my profile now")
         // show my profile
         currentPage = showPage('my-profile')
         // load my profile, so use 'others-profile-container' and currentUserId
         const profileContainer = document.getElementById('my-profile-container');
         currentProfileId = loadProfile(profileContainer, currentUserId)
     } else if (currentPage === 'others-profile') {  // reload others-profile
-        console.log("others profile now")
         // show others profile
         currentPage = showPage('others-profile')
         // load others profile, so use 'others-profile-container' and 
@@ -771,7 +748,6 @@ const unlikeJob = (jobId, likeJobButton) => {
             turnon: false,
         }
     ).then((data) => {
-        console.log(data)
         // deep clone the element
         const newlikeJobButton = likeJobButton.cloneNode(true);
         // use the clone replace with the original one, which will remove all eventListener
@@ -795,7 +771,6 @@ const likeJob = (jobId, likeJobButton) => {
             turnon: true,
         }
     ).then((data) => {
-        console.log(data)
         // deep clone the element
         const newlikeJobButton = likeJobButton.cloneNode(true);
         // use the clone replace with the original one, which will remove all eventListener
@@ -887,7 +862,6 @@ const checkLikesList = (job) => {
 
     const modal = new bootstrap.Modal(document.getElementById('jobLikesModal'))
     modal.show()
-    // console.log(`calling checkLikesList for job ${job.id}`)
 }
 
 const checkCommentsList = (job) => {
@@ -970,7 +944,6 @@ const checkCommentsList = (job) => {
 
     const modal = new bootstrap.Modal(document.getElementById('jobCommentsModal'))
     modal.show()
-    // console.log(`calling checkCommentsList for job ${job.id}`)
 }
 
 const loadFeed = (start = 0) => {
@@ -998,7 +971,6 @@ const loadFeed = (start = 0) => {
             return
         }
         for (const job of data) {
-            console.log(job)
             const container = document.getElementById('feed-container')
             createCard(job, container)
         }
@@ -1011,7 +983,6 @@ const loadFeed = (start = 0) => {
 
 // load profile for give userid to given container
 const loadProfile = (container, userId) => {
-    console.log("loding my profile")
     apiCall(
         `user?userId=${userId}`,
         'GET',
@@ -1026,8 +997,6 @@ const loadProfile = (container, userId) => {
 }
 
 const displayProfileData = (container, userData) => {
-    console.log(userData)
-    console.log(container)
     // clear the container
     while (container.firstChild) {
         container.removeChild(container.firstChild);
@@ -1097,8 +1066,6 @@ const displayProfileData = (container, userData) => {
                 }
                 // not go inside if true, watchFlag remain true
                 // // not watch yet, watching this user
-                // watchByEmail(userData, true)
-                // watchFlag = true
             }
         }
         if (watchFlag) {
@@ -1157,7 +1124,6 @@ const displayProfileData = (container, userData) => {
 }
 
 const watchByEmail = (userData, watchFlag) => {
-    console.log(userData.email)
     apiCall(
         'user/watch',
         'PUT',
@@ -1211,13 +1177,10 @@ const updateUserProfile = () => {
         password: password || undefined,
         name: name || undefined
     }
-    console.log("requestBody")
-    console.log(requestBody)
     // if there no image, send the put request
     if (!imageFile) {
         // if the request body actually empty
         if (requestBody.email === undefined && requestBody.password === undefined && requestBody.name === undefined) {
-            console.log("here")
             showErrorPopup('Update profile', 'Profile remain unchanged!', 'blue')
             // close the updateprofilemodal
             const modal = bootstrap.Modal.getInstance(
@@ -1238,7 +1201,6 @@ const updateUserProfile = () => {
 }
 
 const sendUpdateRequest = (requestBody) => {
-    console.log("sending update request to server")
     apiCall(
         'user',
         'PUT',
@@ -1347,8 +1309,6 @@ const checkScroll = () => {
     // do this while the window scroll to bottom within 100px
     if (scrollTop + clientHeight > scrollHeight - 100) {
         const loadedCount = document.querySelectorAll('.count-job-card').length;
-        console.log("loadedcount")
-        console.log(loadedCount)
         loadFeed(loadedCount);
     }
 }
