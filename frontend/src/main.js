@@ -6,8 +6,15 @@ console.log('Let\'s go!');
 
 // Function to show error popup with a custom message
 function showErrorPopup(errorLabel, errorMessage) {
-    // Get the modal and the element where the error message will be displayed
-    const modal = new bootstrap.Modal(document.getElementById('errorPopup'))
+    // // Get the modal and the element where the error message will be displayed
+    // const modal = new bootstrap.Modal(document.getElementById('errorPopup'))
+
+    const modalElement = document.getElementById('errorPopup');
+    
+    const modal = new bootstrap.Modal(modalElement, {
+        backdrop: true,
+        keyboard: true
+    });
 
     const modalLabel = document.getElementById('errorPopupLabel')
 
@@ -162,8 +169,26 @@ document.addEventListener('click', (e) => {
     if (e.target.classList.contains('btn-search-user')) {
         showSearchUserModal()
     }
+
+    if (e.target.classList.contains('btn-add-job')) {
+        showAddJobModal()
+    }
 });
 
+// pop up a modal for add job usage
+const showAddJobModal = () => {
+    const modal = new bootstrap.Modal(document.getElementById('addJobModal'))
+    modal.show();
+
+    const addJobButton = document.getElementById('btn-add-job')
+    const newAddJobButtonButton = addJobButton.cloneNode(true);
+    // use the clone replace with the original one, which will remove all eventListener
+    addJobButton.replaceWith(newAddJobButtonButton);
+
+    newAddJobButtonButton.addEventListener('click', () => {
+        addJob()
+    });
+}
 
 // pop up a modal for search user usage
 const showSearchUserModal = () => {
@@ -181,7 +206,6 @@ const showSearchUserModal = () => {
 }
 
 const watchSearchedUser = () => {
-    console.log("watch searched user")
     const email = document.getElementById('search-user-email').value
 
     apiCall(
@@ -843,31 +867,6 @@ const displayProfileData = (container, userData) => {
 
     // adding watchers
     for (const watcherId of userData.usersWhoWatchMeUserIds) {
-        addWatcher(watcherId, watcherContainer)
-        addWatcher(watcherId, watcherContainer)
-        addWatcher(watcherId, watcherContainer)
-        addWatcher(watcherId, watcherContainer)
-        addWatcher(watcherId, watcherContainer)
-        addWatcher(watcherId, watcherContainer)
-        addWatcher(watcherId, watcherContainer)
-        addWatcher(watcherId, watcherContainer)
-        addWatcher(watcherId, watcherContainer)
-        addWatcher(watcherId, watcherContainer)
-        addWatcher(watcherId, watcherContainer)
-        addWatcher(watcherId, watcherContainer)
-        addWatcher(watcherId, watcherContainer)
-        addWatcher(watcherId, watcherContainer)
-        addWatcher(watcherId, watcherContainer)
-        addWatcher(watcherId, watcherContainer)
-        addWatcher(watcherId, watcherContainer)
-        addWatcher(watcherId, watcherContainer)
-        addWatcher(watcherId, watcherContainer)
-        addWatcher(watcherId, watcherContainer)
-        addWatcher(watcherId, watcherContainer)
-        addWatcher(watcherId, watcherContainer)
-        addWatcher(watcherId, watcherContainer)
-        addWatcher(watcherId, watcherContainer)
-        addWatcher(watcherId, watcherContainer)
         addWatcher(watcherId, watcherContainer)
     }
 }
