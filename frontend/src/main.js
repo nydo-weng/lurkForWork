@@ -197,6 +197,11 @@ const addJob = () => {
     const title = document.getElementById('add-job-title').value
 
     const dateInput = document.getElementById('add-job-date').value
+    if (!dateInput) {
+        showErrorPopup('Error', 'Please enter all relevant fields')
+        return
+    }
+
     const dateObj = new Date(dateInput)
     // convert to the format server required
     const date = dateObj.toISOString();
@@ -280,7 +285,7 @@ const watchSearchedUser = () => {
         }
     ).then(() => {
         // reach here if backend ok with this watch
-        alert(`You are watching ${email} now!`)
+        showErrorPopup('Watching', `You are watching ${email} now!`, 'blue')
         // reload page, up to which current page is
         reloadPage()
         // close the modal
@@ -1166,9 +1171,9 @@ const watchByEmail = (userData, watchFlag) => {
     ).then(() => {
         // reach here if backend ok with this watch
         if (watchFlag) {
-            alert(`You are watching ${userData.name} now!`)
+            showErrorPopup('Watching', `You are watching ${userData.name} now!`, 'blue')
         } else {
-            alert(`You are unwatched ${userData.name} now!`)
+            showErrorPopup('Unwatched', `You are unwatched ${userData.name} now!`, 'blue')
         }
 
         // reload the other profile page
@@ -1216,7 +1221,7 @@ const updateUserProfile = () => {
         // if the request body actually empty
         if (requestBody.email === undefined && requestBody.password === undefined && requestBody.name === undefined) {
             console.log("here")
-            alert('Profile remain unchanged!')
+            showErrorPopup('Update profile', 'Profile remain unchanged!', 'blue')
             // close the updateprofilemodal
             const modal = bootstrap.Modal.getInstance(
                 document.getElementById('updateProfileModal')
@@ -1243,7 +1248,7 @@ const sendUpdateRequest = (requestBody) => {
         requestBody
     ).then(() => {
         // reach here if backend ok with this profile update
-        alert('Profile update successful!')
+        showErrorPopup('Update profile', 'Profile update successful!', 'blue')
         // empty the form
         document.getElementById('update-email').value = ''
         document.getElementById('update-password').value = ''

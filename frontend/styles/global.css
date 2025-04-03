@@ -182,6 +182,12 @@
     display: none;
 }
 
+#feed-no-more,
+#feed-loading {
+    text-align: center;
+    padding: auto 0;
+}
+
 @media (max-width: 750px) {
     .top-bar h1 {
         /* don't display h1 since there will be no space in one line*/
