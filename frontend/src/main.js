@@ -610,8 +610,30 @@ const displayProfileData = (container, userData) => {
     }
 }
 
+// add watcher to profile page base on given watcherId to given container
 const addWatcher = (watcherId, container) => {
-    console.log(watcherId)
+    apiCall(
+        `user?userId=${watcherId}`,
+        'GET',
+        {}
+    ).then((data) => {
+        const watcherName = data.name
+        console.log(watcherName)
+
+        const watcherBlock = document.createElement('div')
+        watcherBlock.classList.add('profile-watcher-name-block')
+
+        const watcherNameSpan = document.createElement('span')
+        watcherNameSpan.textContent = '👀 ' + watcherName
+        watcherNameSpan.classList.add('profile-watcher-name-span')
+
+        watcherBlock.appendChild(watcherNameSpan)
+
+        container.appendChild(watcherBlock)
+        
+    }).catch((error) => {
+        showErrorPopup('Error', error.message)
+    });
 }
 
 // everytime call this function, it will take a func, and execute it at delay

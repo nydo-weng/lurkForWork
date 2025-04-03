@@ -76,7 +76,7 @@
     margin-top: 5vh;
 }
 
-.job-modal-block {
+.job-modal-block, .profile-watcher-name-block {
     background-color: #f0f0f0;
     padding: 10px;
     margin-bottom: 10px;
@@ -135,7 +135,7 @@
     font-size: 14px;
 }
 
-/* 内容区域 - 左右布局 */
+/* use left right disply */
 .profile-content {
     display: flex;
     width: 100%;
@@ -157,9 +157,8 @@
     background: white;
     border-left: 1px solid #f5f5f5;
     overflow: auto;
-    max-height: 75vh;
+    height: 75vh;
 }
-
 
 @media (max-width: 600px) {
     .profile-content {
