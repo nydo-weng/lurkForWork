@@ -244,6 +244,7 @@ const sendAddJobRequest = (requestBody) => {
             document.getElementById('addJobModal')
         )
         modal.hide()
+        // reload page
     }).catch((error) => {
         // remain modal open if faild
         showErrorPopup('Error', error.message)
@@ -529,14 +530,46 @@ const createCard = (job, container) => {
         });
         cardBody.appendChild(cardCommentsButton)
 
+        // delete & updating 
+        // job belong current user, show update and delet button
+        if (parseInt(job.creatorId) === parseInt(currentUserId)) {
+            const breakLine2 = document.createElement('br')
+            cardBody.appendChild(breakLine2)
+
+            const updateJobButton = document.createElement('button')
+            updateJobButton.classList.add('btn', 'btn-primary')
+            updateJobButton.id = `btn-update-job-${job.id}`
+            updateJobButton.textContent = `Update Job`
+            cardBody.appendChild(updateJobButton)
+            updateJobButton.style.marginTop = "20px"
+            
+            
+            const deleteJobButton = document.createElement('button')
+            // make the button red
+            deleteJobButton.classList.add('btn', 'btn-danger')
+            deleteJobButton.id = `btn-delete-job-${job.id}`
+            deleteJobButton.textContent = `Delete Job`
+            cardBody.appendChild(deleteJobButton)
+            deleteJobButton.style.marginTop = "20px"
+            deleteJobButton.style.marginLeft = "80px"
+
+
+            updateJobButton.addEventListener('click', () => {
+                updateJob(job)
+            });
+
+            deleteJobButton.addEventListener('click', () => {
+                deleteJob(job)
+            });
+        }
         card.appendChild(cardBody)
-
         cardContainer.appendChild(card)
-
     }).catch((error) => {
         showErrorPopup('Error', error.message)
     });
 }
+
+
 
 const unlikeJob = (jobId, likeJobButton) => {
     apiCall(
