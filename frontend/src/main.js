@@ -788,19 +788,19 @@ const displayProfileData = (container, userData) => {
         addWatcher(watcherId, watcherContainer)
         addWatcher(watcherId, watcherContainer)
         addWatcher(watcherId, watcherContainer)
-
     }
 }
 
 const showUpdateProfileModal = (userData) => {
     const modal = new bootstrap.Modal(document.getElementById('updateProfileModal'))
     modal.show();
-    // change default value
-    document.getElementById('update-email').value = userData.email || ''
-    document.getElementById('update-name').value = userData.name || ''
 
-    // Add event listener to the update button
-    document.getElementById('btn-confirm-update').addEventListener('click', () => {
+    const confirmUpdateProfileButton = document.getElementById('btn-confirm-update')
+    const newConfirmUpdateProfileButton = confirmUpdateProfileButton.cloneNode(true);
+    // use the clone replace with the original one, which will remove all eventListener
+    confirmUpdateProfileButton.replaceWith(newConfirmUpdateProfileButton);
+
+    newConfirmUpdateProfileButton.addEventListener('click', () => {
         updateUserProfile(userData.id);
     });
 }
@@ -811,20 +811,27 @@ const updateUserProfile = (userId) => {
     const name = document.getElementById('update-name').value
     const imageFile = document.getElementById('update-image').files[0]
 
-    console.log(email)
-    console.log(password)
-    console.log(name)
-    console.log(imageFile)
-
     const requestBody = {
         email: email || undefined,
         password: password || undefined,
         name: name || undefined
     }
-
+    console.log("requestBody")
+    console.log(requestBody)
     // if there no image, send the put request
     if (!imageFile) {
-        sendUpdateRequest(requestBody)
+        // if the request body actually empty
+        if (requestBody.email === undefined && requestBody.password === undefined && requestBody.name === undefined) {
+            console.log("here")
+            alert('Profile remain unchanged!')
+            // close the updateprofilemodal
+            const modal = bootstrap.Modal.getInstance(
+                document.getElementById('updateProfileModal')
+            )
+            modal.hide()
+        } else {
+            sendUpdateRequest(requestBody)
+        }
     } else {
         fileToDataUrl(imageFile).then((dataUrl) => {
             requestBody.image = dataUrl
@@ -837,6 +844,33 @@ const updateUserProfile = (userId) => {
 
 const sendUpdateRequest = (requestBody) => {
     console.log("sending update request to server")
+    apiCall(
+        'user',
+        'PUT',
+        requestBody
+    ).then((data) => {
+        // reach here if backend ok with this profile update
+        alert('Profile update successful!')
+        // empty the form
+        document.getElementById('update-email').value = ''
+        document.getElementById('update-password').value = ''
+        document.getElementById('update-name').value = ''
+        document.getElementById('update-image').value = ''
+        // reload the my profile page
+        clearFeed()
+        showPage('my-profile')
+        // load my profile, so use 'my-profile-container' and current id
+        const profileContainer = document.getElementById('my-profile-container');
+        loadProfile(profileContainer, currentUserId)
+    
+        // close the updateprofilemodal
+        const modal = bootstrap.Modal.getInstance(
+            document.getElementById('updateProfileModal')
+        )
+        modal.hide()
+    }).catch((error) => {
+        showErrorPopup('Error', error.message)
+    });
 }
 
 // add watcher to profile page base on given watcherId to given container
