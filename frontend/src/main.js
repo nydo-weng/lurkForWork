@@ -713,6 +713,9 @@ const displayProfileData = (container, userData) => {
     if (parseInt(currentUserId) === parseInt(userData.id)) {
         profileButton.id = 'btn-update-profile';
         profileButton.textContent = 'Update my profile';
+        profileButton.addEventListener('click', () => {
+            showUpdateProfileModal(userData.id)
+        })
     } else {
         profileButton.id = 'btn-watch-profile';
         profileButton.textContent = 'Watch this profile';
@@ -733,16 +736,11 @@ const displayProfileData = (container, userData) => {
     const watcherNumber = document.createElement('span');
     watcherNumber.className = 'watcher-number';
     watcherNumber.textContent = `Watched by ${userData.usersWhoWatchMeUserIds.length} users:`
-    
-    // const watchersLabel = document.createElement('span');
-    // watchersLabel.className = 'watcher-label';
-    // watchersLabel.textContent = 'Users watching:';
 
     const watcherContainer = document.createElement('div');
     watcherContainer.className = 'profile-watcher-container';
 
     watcherSection.appendChild(watcherNumber)
-    // watcherSection.appendChild(watchersLabel)
     watcherSection.appendChild(watcherContainer)
     
     // use to display job and watcher side by side
@@ -792,6 +790,13 @@ const displayProfileData = (container, userData) => {
         addWatcher(watcherId, watcherContainer)
         
     }
+}
+
+const showUpdateProfileModal = (userId) => {
+    console.log('updating')
+    console.log(userId)
+    const modal = new bootstrap.Modal(document.getElementById('updateProfileModal'));
+    modal.show();
 }
 
 // add watcher to profile page base on given watcherId to given container
