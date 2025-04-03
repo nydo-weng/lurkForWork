@@ -593,14 +593,52 @@ const createCard = (job, container) => {
 const showLeaveCommentModal = (job) => {
     const modal = new bootstrap.Modal(document.getElementById('leaveCommentsModal'))
     modal.show();
+    console.log("leaving comments")
 
-    const confirmCommentButton = document.getElementById('btn-update-job')
+    const confirmCommentButton = document.getElementById('btn-comment')
     const newConfirmCommentButton = confirmCommentButton.cloneNode(true);
     // use the clone replace with the original one, which will remove all eventListener
     confirmCommentButton.replaceWith(newConfirmCommentButton);
 
     newConfirmCommentButton.addEventListener('click', () => {
-        sendCommentsRequest(job);
+        leaveComments(job);
+    });
+}
+
+const leaveComments = (job) => {
+    console.log("leaving comments")
+    const text = document.getElementById('comments-text').value
+
+    const requestBody = {
+        id: job.id,
+        comment: text 
+    }
+    sendLeaveCommentsRequest(requestBody)
+}
+
+const sendLeaveCommentsRequest = (requestBody) => {
+    console.log("sending update job request to server")
+    apiCall(
+        'job/comment',
+        'POST',
+        requestBody
+    ).then(() => {
+        // reach here if backend ok with this job update
+        showErrorPopup('Comments leaved', "Thanks for your comments!", 'blue')
+
+        // empty the form
+        document.getElementById('comments-text').value = ''
+
+        // close the leaveCommentsModal after comment
+        const modal = bootstrap.Modal.getInstance(
+            document.getElementById('leaveCommentsModal')
+        )
+        modal.hide()
+        // reload page
+        reloadPage()
+    }).catch((error) => {
+        // remain modal open if faild
+        showErrorPopup('Error', error.message)
     });
 }
 
@@ -622,6 +660,7 @@ const deleteJob = (job) => {
     });
 }
 
+// show updatejob modal
 const showUpdateJobModal = (job) => {
     const modal = new bootstrap.Modal(document.getElementById('updateJobModal'))
     modal.show();
@@ -636,7 +675,6 @@ const showUpdateJobModal = (job) => {
     });
 }
 
-// show updatejob modal
 const updateJob = (job) => {
     const title = document.getElementById('update-job-title').value
 
