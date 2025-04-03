@@ -555,11 +555,11 @@ const displayProfileData = (container, userData) => {
     
     const userName = document.createElement('h2');
     userName.className = 'profile-name';
-    userName.textContent = userData.name;
+    userName.textContent = `Name: ${userData.name}`;
     
     const userEmail = document.createElement('p');
     userEmail.className = 'profile-email';
-    userEmail.textContent = userData.email;
+    userEmail.textContent = `Email: ${userData.email}`;
     
     profileHeader.appendChild(userName);
     profileHeader.appendChild(userEmail);
