@@ -475,7 +475,7 @@ const checkLikesList = (job) => {
                 // close jobLikesModal
                 const modal = bootstrap.Modal.getInstance(document.getElementById('jobLikesModal'));
                 modal.hide();
-                
+
                 // if go to the user profile with same id with currentuserid, go my profile
                 if (parseInt(likedUserId) === parseInt(currentUserId)) {
                     // show my profile
@@ -654,7 +654,7 @@ const loadProfile = (container, userId) => {
         {}
     ).then((data) => {
         displayProfileData(container, data)
-        
+
     }).catch((error) => {
         showErrorPopup('Error', error.message)
     });
@@ -672,15 +672,15 @@ const displayProfileData = (container, userData) => {
     // create a profileCard
     const profileCard = document.createElement('div');
     profileCard.className = 'profile-card';
-    
+
     // create a header which contain name and email
     const profileHeader = document.createElement('div');
     profileHeader.className = 'profile-header';
-    
+
     // Create avatar container (leftmost element)
     const avatarContainer = document.createElement('div');
     avatarContainer.className = 'profile-avatar';
-    
+
     const avatarImg = document.createElement('img');
     avatarImg.className = 'avatar-image';
     // Set avatar source, use default if not available
@@ -688,9 +688,9 @@ const displayProfileData = (container, userData) => {
     console.log(userData.image)
     avatarImg.src = userData.image || 'https://odin-project-google-homepage-clone.vercel.app/images/google-account.png';
     avatarImg.alt = `${userData.name}'s avatar`;
-    
+
     avatarContainer.appendChild(avatarImg);
-    
+
     // Create text content (name and email)
     const textContent = document.createElement('div');
     textContent.className = 'profile-text-content';
@@ -705,7 +705,7 @@ const displayProfileData = (container, userData) => {
 
     textContent.appendChild(userName);
     textContent.appendChild(userEmail);
-    
+
     // Create the profile button
     const profileButton = document.createElement('button');
     profileButton.className = 'btn btn-primary profile-buttons';
@@ -714,7 +714,7 @@ const displayProfileData = (container, userData) => {
         profileButton.id = 'btn-update-profile';
         profileButton.textContent = 'Update my profile';
         profileButton.addEventListener('click', () => {
-            showUpdateProfileModal(userData.id)
+            showUpdateProfileModal(userData)
         })
     } else {
         profileButton.id = 'btn-watch-profile';
@@ -724,15 +724,15 @@ const displayProfileData = (container, userData) => {
     profileHeader.appendChild(avatarContainer);
     profileHeader.appendChild(textContent);
     profileHeader.appendChild(profileButton);
-    
+
     // create a container to contain job created by this user
     const jobContainer = document.createElement('div');
     jobContainer.className = 'profile-job-container';
-    
+
     // create a section for watcher who watching this profile
     const watcherSection = document.createElement('div');
     watcherSection.className = 'watcher-section';
-    
+
     const watcherNumber = document.createElement('span');
     watcherNumber.className = 'watcher-number';
     watcherNumber.textContent = `Watched by ${userData.usersWhoWatchMeUserIds.length} users:`
@@ -742,17 +742,17 @@ const displayProfileData = (container, userData) => {
 
     watcherSection.appendChild(watcherNumber)
     watcherSection.appendChild(watcherContainer)
-    
+
     // use to display job and watcher side by side
     const contentContainer = document.createElement('div');
     contentContainer.className = 'profile-content';
-    
+
     contentContainer.appendChild(watcherSection);
     contentContainer.appendChild(jobContainer);
-    
+
     profileCard.appendChild(profileHeader);
     profileCard.appendChild(contentContainer);
-    
+
     container.appendChild(profileCard);
 
     // adding job
@@ -788,15 +788,55 @@ const displayProfileData = (container, userData) => {
         addWatcher(watcherId, watcherContainer)
         addWatcher(watcherId, watcherContainer)
         addWatcher(watcherId, watcherContainer)
-        
+
     }
 }
 
-const showUpdateProfileModal = (userId) => {
-    console.log('updating')
-    console.log(userId)
-    const modal = new bootstrap.Modal(document.getElementById('updateProfileModal'));
+const showUpdateProfileModal = (userData) => {
+    const modal = new bootstrap.Modal(document.getElementById('updateProfileModal'))
     modal.show();
+    // change default value
+    document.getElementById('update-email').value = userData.email || ''
+    document.getElementById('update-name').value = userData.name || ''
+
+    // Add event listener to the update button
+    document.getElementById('btn-confirm-update').addEventListener('click', () => {
+        updateUserProfile(userData.id);
+    });
+}
+
+const updateUserProfile = (userId) => {
+    const email = document.getElementById('update-email').value
+    const password = document.getElementById('update-password').value
+    const name = document.getElementById('update-name').value
+    const imageFile = document.getElementById('update-image').files[0]
+
+    console.log(email)
+    console.log(password)
+    console.log(name)
+    console.log(imageFile)
+
+    const requestBody = {
+        email: email || undefined,
+        password: password || undefined,
+        name: name || undefined
+    }
+
+    // if there no image, send the put request
+    if (!imageFile) {
+        sendUpdateRequest(requestBody)
+    } else {
+        fileToDataUrl(imageFile).then((dataUrl) => {
+            requestBody.image = dataUrl
+            sendUpdateRequest(requestBody)
+        }).catch((error) => {
+            showErrorPopup('Error', error.message)
+        });
+    }
+}
+
+const sendUpdateRequest = (requestBody) => {
+    console.log("sending update request to server")
 }
 
 // add watcher to profile page base on given watcherId to given container
@@ -844,17 +884,17 @@ const addWatcher = (watcherId, container) => {
             watcherBlock.style.transform = 'scale(1.05)';
             watcherBlock.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
         });
-        
+
         // cursor leave, back to normal
         watcherBlock.addEventListener('mouseleave', () => {
             watcherBlock.style.transform = 'scale(1)';
             watcherBlock.style.boxShadow = 'none';
         });
-        
+
         watcherBlock.appendChild(watcherNameSpan)
 
         container.appendChild(watcherBlock)
-        
+
     }).catch((error) => {
         showErrorPopup('Error', error.message)
     });
@@ -863,7 +903,7 @@ const addWatcher = (watcherId, container) => {
 // everytime call this function, it will take a func, and execute it at delay
 const debounce = (func, delay) => {
     let timeoutId;
-    return function() {
+    return function () {
         const context = this;
         const args = arguments;
         clearTimeout(timeoutId);    // clear timeOut if there is one
